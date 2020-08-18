@@ -30,8 +30,15 @@ class Player:
 
         :param string channel_id:       The ID of the channel to play.
         """
-        # channel_info = self._api.get_channel(channel_id)
-        # TODO: use channel_info to add extra information to the listitem to play
+        channel_info = self._channel_api.get_channel(channel_id)
+        info_dict = {
+            'title': channel_info.epg_now.title,
+            'plot': channel_info.epg_now.description,
+        }
+        art_dict = {
+            'thumb': channel_info.epg_now.preview,
+            'cover': channel_info.epg_now.cover,
+        }
 
         try:
             stream_info = self._channel_api.get_stream(channel_id)
@@ -43,7 +50,7 @@ class Player:
         license_key = self._create_license_key(stream_info.drm_license_url)
 
         _LOGGER.debug('Starting playing %s with license key %s', stream_info.url, license_key)
-        kodiutils.play(stream_info.url, license_key)
+        kodiutils.play(stream_info.url, license_key, channel_info.title, art_dict, info_dict)
 
     @staticmethod
     def _create_license_key(key_url, key_type='R', key_headers=None, key_value=None):

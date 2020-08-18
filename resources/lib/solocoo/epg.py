@@ -10,56 +10,9 @@ from datetime import datetime, timedelta
 import dateutil.tz
 
 from resources.lib.solocoo import SOLOCOO_API, util
-from resources.lib.solocoo.util import find_image
+from resources.lib.solocoo.util import parse_epg_program
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class EpgProgram:
-    """ Channel object """
-
-    def __init__(self, uid, title, description, cover, preview, start, end, channel_id, formats, genres, replay,
-                 restart, age, series_id=None, season=None, episode=None, credit=None):
-        self.uid = uid
-        self.title = title
-        self.description = description
-        self.cover = cover
-        self.preview = preview
-        self.start = start
-        self.end = end
-        self.age = age
-        self.channel_id = channel_id
-
-        self.formats = formats
-        self.generes = genres
-
-        self.replay = replay
-        self.restart = restart
-
-        self.series_id = series_id
-        self.season = season
-        self.episode = episode
-
-        self.credit = credit
-
-    def __repr__(self):
-        return "%r" % self.__dict__
-
-
-class Credit:
-    """ Credit object """
-
-    ROLE_ACTOR = 'Actor'
-    ROLE_COMPOSER = 'Composer'
-    ROLE_DIRECTOR = 'Director'
-    ROLE_GUEST = 'Guest'
-    ROLE_PRESENTER = 'Presenter'
-    ROLE_PRODUCER = 'Producer'
-
-    def __init__(self, role, person, character=None):
-        self.role = role
-        self.person = person
-        self.character = character
 
 
 class EpgApi:
@@ -104,7 +57,7 @@ class EpgApi:
         data = json.loads(reply.text)
 
         # Parse to a dict (channel: list[Program])
-        programs = {channel: [self._parse_epg_program(program) for program in programs]
+        programs = {channel: [parse_epg_program(program) for program in programs]
                     for channel, programs in data.get('epg', []).items()}
 
         return programs
@@ -120,39 +73,7 @@ class EpgApi:
         data = json.loads(reply.text)
 
         # Parse to a Program object
-        return self._parse_epg_program(data)
-
-    @staticmethod
-    def _parse_epg_program(program):
-        """ Parse a program dict.
-
-        :param dict program:            The program object to parse.
-        :rtype: Program
-        """
-
-        # TODO: ratingCategories?
-        return EpgProgram(
-            uid=program.get('id'),
-            title=program.get('title'),
-            description=program.get('desc'),
-            cover=find_image(program.get('images'), 'po'),  # portrait
-            preview=find_image(program.get('images'), 'la'),  # landscape
-            start=program.get('params', {}).get('start'),
-            end=program.get('params', {}).get('end'),
-            channel_id=program.get('params', {}).get('channelId'),
-            formats=[format.get('title') for format in program.get('params', {}).get('formats')],
-            genres=[genre.get('title') for genre in program.get('params', {}).get('genres')],
-            replay=program.get('params', {}).get('replay', False),
-            restart=program.get('params', {}).get('restart', False),
-            age=program.get('params', {}).get('age'),
-            series_id=program.get('params', {}).get('seriesId'),
-            season=program.get('params', {}).get('seriesSeason'),
-            episode=program.get('params', {}).get('seriesEpisode'),
-            credit=[
-                Credit(credit.get('role'), credit.get('person'), credit.get('character'))
-                for credit in program.get('params', {}).get('credits', [])
-            ]
-        )
+        return parse_epg_program(data)
 
     @staticmethod
     def _parse_date(date):

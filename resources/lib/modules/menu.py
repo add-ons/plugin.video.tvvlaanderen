@@ -7,7 +7,7 @@ import logging
 
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
-from resources.lib.solocoo.channel import Channel
+from resources.lib.solocoo.util import Channel
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class Menu:
                     'fanart': item.preview,
                 },
                 info_dict={
-                    'plot': None,
+                    'plot': None, # TODO: format plot
                     'playcount': 0,
                     'mediatype': 'video',
                 },

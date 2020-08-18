@@ -12,9 +12,13 @@ class UnavailableException(Exception):
     """ Is thrown when an item is unavailable. """
 
 
+class InvalidTokenException(Exception):
+    """ Is thrown when the token is invalid. """
+
+
 class InvalidLoginException(Exception):
-    """ Is thrown when the credentials are invalid """
+    """ Is thrown when the credentials are invalid. """
 
 
-class LoginErrorException(Exception):
-    """ Is thrown when we could not login """
+# class LoginErrorException(Exception):
+#     """ Is thrown when we could not login """

@@ -44,6 +44,9 @@ class AccountStorage:
     # Token used to authenticate a request to the tvapi.solocoo.tv endpoint
     jwt_token = ''
 
+    # Credentials hash
+    hash = ''
+
     def is_valid_token(self):
         """ Validate the JWT to see if it's still valid.
 
@@ -62,6 +65,7 @@ class AccountStorage:
             _LOGGER.debug('JWT is NOT valid: %s', exc)
             return False
 
+        _LOGGER.debug('JWT is valid')
         return True
 
 
@@ -80,6 +84,8 @@ class AuthApi:
         self._username = username
         self._password = password
 
+        # TODO: store a hash based on the username and password
+
         self._tenant = TENANTS.get(tenant)
         if self._tenant is None:
             raise Exception('Invalid tenant: %s' % tenant)
@@ -95,108 +101,116 @@ class AuthApi:
             self._account.device_serial = str(uuid.uuid4())
             self._save_cache()
 
-        # self.login()
+        # Do login so we have valid tokens
+        self.login()
 
-    def login(self, use_cache=True):
-        """ Make a new login request.
+    def login(self, force=False):
+        """ Make a login request.
 
+        :param bool force:              Force authenticating from scratch without cached tokens.
+
+        :return:
         :rtype: AccountStorage
         """
-        if not use_cache:
-            # Remove the cached tokens
-            self.logout()
-
         # Use cached token if it is still valid
-        if self._account.is_valid_token():
+        if not force and self._account.is_valid_token():
             return self._account
 
-        # TODO: when changing the username and password, we need to invalidate the challenge_secret
+        # TODO: when changing the username and password, we need to invalidate the tokens
 
         if not self._account.challenge_id or not self._account.challenge_secret:
             # We don't have an challenge_id or challenge_secret, so we need to request one
-
-            if self._username and self._password:
-                # Do authenticated login
-                oauth_code = self._do_login()
-                data = dict(
-                    autotype='nl',
-                    app=self._tenant.get('app'),
-                    prettyname=self._account.device_name,
-                    model='web',
-                    serial=self._account.device_serial,
-                    oauthcode=oauth_code,
-                    apikey='',
-                )
-            else:
-                # Do anonymous login
-                data = dict(
-                    autotype='nl',
-                    app=self._tenant.get('app'),
-                    prettyname=self._account.device_name,
-                    model='web',
-                    serial=self._account.device_serial,
-                )
-
-            reply = util.http_post('https://{domain}/{env}/challenge.aspx'.format(domain=self._tenant.get('domain'),
-                                                                                  env=self._tenant.get('env')),
-                                   data=data)
-            challenge = json.loads(reply.text)
-            self._account.challenge_id = challenge.get('id')
-            self._account.challenge_secret = challenge.get('secret')
-
-        # Request cookie based on challenge response
-        # We will be redirected to https://{domain}/{env}/default.aspx
-        try:
-            reply = util.http_post(
-                'https://{domain}/{env}/login.aspx'.format(domain=self._tenant.get('domain'),
-                                                           env=self._tenant.get('env')),
-                form=dict(
-                    secret=self._account.challenge_id + '\t' + self._account.challenge_secret,
-                    uid=self._account.device_serial,
-                    app=self._tenant.get('app'),
-                )
+            # This challenge can be kept for a longer time
+            self._account.challenge_id, self._account.challenge_secret = self._do_challenge(
+                self._account.device_name,
+                self._account.device_serial,
+                self._username,
+                self._password,
             )
 
-            # We got redirected, and the last response doesn't contain the cookie we need.
-            self._account.aspx_token = reply.history[0].cookies.get('.ASPXAUTH')
+        # Request the ASPX cookie based on the challenge. The website does this every session.
+        try:
+            self._account.aspx_token = self._get_aspx_cookie(self._account.challenge_id,
+                                                             self._account.challenge_secret,
+                                                             self._account.device_serial)
         except HTTPError as ex:
-            if ex.response.status_code == 402:
-                # We could not pick up our session. This probably means that our challenge isn't valid anymore.
-                if use_cache:
-                    # This isn't an outdated token in the cache. Giving up.
-                    raise InvalidLoginException
+            if ex.response.status_code == 403:
+                # Our challenge_id and challenge_secret isn't valid anymore
+                _LOGGER.info('The challenge_id and challenge_secret are not valid anymore. Requesting new ones.')
+                self._account.challenge_id, self._account.challenge_secret = self._do_challenge(
+                    self._account.device_name,
+                    self._account.device_serial,
+                    self._username,
+                    self._password,
+                )
 
-                # We need to retry the challenge.
-                return self.login(False)
+                # Try again with a fresh challenge
+                self._account.aspx_token = self._get_aspx_cookie(self._account.challenge_id,
+                                                                 self._account.challenge_secret,
+                                                                 self._account.device_serial)
+            else:
+                raise
 
         # And finally, get our sapi token by using our stored ASPXAUTH token
         # The sapi token token seems to expires in 30 minutes
-        reply = util.http_get('https://{domain}/{env}/capi.aspx?z=ssotoken'.format(domain=self._tenant.get('domain'),
-                                                                                   env=self._tenant.get('env')),
-                              token_cookie=self._account.aspx_token)
-        sso_token = json.loads(reply.text).get('ssotoken')
+        sapi_token = self._get_sapi_token(self._account.aspx_token)
 
         # Request JWT token
         # The JWT token also seems to expires in 30 minutes
-        reply = util.http_post(SOLOCOO_API + '/session',
-                               data=dict(
-                                   sapiToken=sso_token,
-                                   deviceModel=self._account.device_name,
-                                   deviceType="PC",
-                                   deviceSerial=self._account.device_serial,
-                                   osVersion="Linux undefined",
-                                   appVersion="84.0",
-                                   memberId="0",
-                                   brand=self._tenant.get('app'),
-                               ))
-        self._account.jwt_token = json.loads(reply.text).get('token')
+        self._account.jwt_token = self._get_jwt_token(sapi_token,
+                                                      self._account.device_name,
+                                                      self._account.device_serial)
+
+        # Save the tokens we have in a cache
         self._save_cache()
 
         return self._account
 
-    def _do_login(self):
-        """ Do login with the sso.
+    def _do_challenge(self, device_name, device_serial, username, password):
+        """ Do an authentication challenge.
 
+        :param str device_name:         The device name of this running Kodi instance.
+        :param str device_serial:       The device serial of this running Kodi instance.
+        :param str username:            The username to authenticate with.
+        :param str password:            The password to authenticate with.
+
+        :return: A tuple (challenge_id, challenge_secret) that can be used to fetch a token.
+        :rtype: tuple(str, str)
+        """
+        if username and password:
+            # Do authenticated login
+            oauth_code = self._get_oauth_code(username, password)
+            data = dict(
+                autotype='nl',
+                app=self._tenant.get('app'),
+                prettyname=device_name,
+                model='web',
+                serial=device_serial,
+                oauthcode=oauth_code,
+                apikey='',
+            )
+        else:
+            # Do anonymous login
+            data = dict(
+                autotype='nl',
+                app=self._tenant.get('app'),
+                prettyname=device_name,
+                model='web',
+                serial=device_serial,
+            )
+
+        # TODO: catch exception
+        reply = util.http_post('https://{domain}/{env}/challenge.aspx'.format(domain=self._tenant.get('domain'),
+                                                                              env=self._tenant.get('env')),
+                               data=data)
+        challenge = json.loads(reply.text)
+
+        return challenge.get('id'), challenge.get('secret')
+
+    def _get_oauth_code(self, username, password):
+        """ Do login with the sso and return the OAuth code.
+
+        :return: An OAuth code we can use to continue authenticating.
         :rtype: string
         """
         # This is probably not necessary for all providers, and this also might need some factory pattern to support
@@ -218,8 +232,8 @@ class AuthApi:
         reply = util.http_post(
             'https://{auth}/'.format(auth=self._tenant.get('auth')),
             form=dict(
-                Username=self._username,
-                Password=self._password,
+                Username=username,
+                Password=password,
             )
         )
 
@@ -231,10 +245,64 @@ class AuthApi:
 
         return params.get('code')[0]
 
+    def _get_aspx_cookie(self, challenge_id, challenge_secret, device_serial):
+        """ Get an ASPX cookie.
+
+        :param str challenge_id:        The challenge ID we got from logging in.
+        :param str challenge_secret:    The challenge secret we got from logging in.
+        :param str device_serial:       The device serial of this running Kodi instance.
+
+        :return: An ASPX token.
+        :rtype str
+        """
+        reply = util.http_post(
+            'https://{domain}/{env}/login.aspx'.format(domain=self._tenant.get('domain'),
+                                                       env=self._tenant.get('env')),
+            form=dict(
+                secret=challenge_id + '\t' + challenge_secret,
+                uid=device_serial,
+                app=self._tenant.get('app'),
+            )
+        )
+
+        # We got redirected, and the last response doesn't contain the cookie we need.
+        # We need to get it from the redirect history.
+
+        return reply.history[0].cookies.get('.ASPXAUTH')
+
+    def _get_sapi_token(self, aspx_token):
+        """ Get a SAPI token based on the ASPX cookie.
+
+        :param str aspx_token:          The ASPX cookie we can use to authenticate.
+
+        :return: A SAPI token.
+        :rtype str
+        """
+        reply = util.http_get('https://{domain}/{env}/capi.aspx?z=ssotoken'.format(domain=self._tenant.get('domain'),
+                                                                                   env=self._tenant.get('env')),
+                              token_cookie=aspx_token)
+
+        return json.loads(reply.text).get('ssotoken')
+
+    def _get_jwt_token(self, sapi_token, device_name, device_serial):
+        reply = util.http_post(SOLOCOO_API + '/session',
+                               data=dict(
+                                   sapiToken=sapi_token,
+                                   deviceModel=device_name,
+                                   deviceType="PC",
+                                   deviceSerial=device_serial,
+                                   osVersion="Linux undefined",
+                                   appVersion="84.0",
+                                   memberId="0",
+                                   brand=self._tenant.get('app'),
+                               ))
+        return json.loads(reply.text).get('token')
+
     def logout(self):
         """ Clear the session tokens. """
         self._account.aspx_token = None
         self._account.jwt_token = None
+
         self._save_cache()
 
     def list_entitlements(self):
@@ -286,4 +354,4 @@ class AuthApi:
             os.makedirs(self._token_path)
 
         with open(os.path.join(self._token_path, self.TOKEN_FILE), 'w') as fdesc:
-            json.dump(self._account.__dict__, fdesc)
+            json.dump(self._account.__dict__, fdesc, indent=2)
