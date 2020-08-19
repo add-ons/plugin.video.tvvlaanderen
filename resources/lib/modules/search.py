@@ -18,10 +18,9 @@ class Search:
 
     def __init__(self):
         """ Initialise object """
-        # TODO: hardcoded tvv
         auth = AuthApi(username=kodiutils.get_setting('username'),
                        password=kodiutils.get_setting('password'),
-                       tenant='tvv',
+                       tenant=kodiutils.get_setting('tenant'),
                        token_path=kodiutils.get_tokens_path())
         self._search_api = SearchApi(auth)
 
@@ -37,15 +36,10 @@ class Search:
                 return
 
         # Do search
-        try:
-            items = self._search_api.search(query)
-        except Exception as ex:  # pylint: disable=broad-except
-            kodiutils.notification(message=str(ex))
-            kodiutils.end_of_directory()
-            return
+        items = self._search_api.search(query)
 
         # Display results
         listing = [Menu.generate_titleitem(item) for item in items]
 
         # Sort like we get our results back.
-        kodiutils.show_listing(listing, 30009, content='tvshows')
+        kodiutils.show_listing(listing, 30009, content='episodes')

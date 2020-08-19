@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Tests for Auth API """
+""" Tests for Search API """
 
 # pylint: disable=missing-docstring,no-self-use
 
@@ -9,31 +9,28 @@ import logging
 import unittest
 
 from resources.lib import kodiutils
-from resources.lib.solocoo.auth import AuthApi, AccountStorage
+from resources.lib.solocoo.auth import AuthApi
+from resources.lib.solocoo.search import SearchApi
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class TestAuth(unittest.TestCase):
+class TestSearch(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(TestAuth, self).__init__(*args, **kwargs)
+        super(TestSearch, self).__init__(*args, **kwargs)
 
         self._auth = AuthApi(kodiutils.get_setting('username'),
                              kodiutils.get_setting('password'),
                              kodiutils.get_setting('tenant'),
                              kodiutils.get_tokens_path())
 
-    def test_login(self):
-        account = self._auth.login()
-        self.assertIsInstance(account, AccountStorage)
+    def test_search(self):
+        api = SearchApi(self._auth)
 
-    def test_list_devices(self):
-        devices = self._auth.list_devices()
-        self.assertIsInstance(devices, dict)
+        query = 'vier'
 
-    def test_list_entitlements(self):
-        entitlements = self._auth.list_entitlements()
-        self.assertIsInstance(entitlements, dict)
+        results = api.search(query)
+        self.assertIsInstance(results, list)
 
 
 if __name__ == '__main__':

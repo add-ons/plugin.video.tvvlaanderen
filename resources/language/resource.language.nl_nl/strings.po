@@ -32,7 +32,7 @@ msgid "Search"
 msgstr "Zoeken"
 
 msgctxt "#30010"
-msgid "Search trough the catalogue"
+msgid "Search through the catalogue"
 msgstr "Doorzoek de catalogus"
 
 # msgctxt "#30013"
@@ -93,6 +93,14 @@ msgstr "Doorzoek de catalogus"
 # msgid "Watch [B]{label}[/B] on YouTube"
 # msgstr "Bekijk [B]{label}[/B] op YouTube"
 
+msgctxt "#30213"
+msgid "[B]Now:[/B] {start} - {end}\n» {title}"
+msgstr "[B]Nu:[/B] {start} - {end}\n» {title}"
+
+msgctxt "#30214"
+msgid "[B]Next:[/B] {start} - {end}\n» {title}"
+msgstr "[B]Straks:[/B] {start} - {end}\n» {title}"
+
 
 ### Dates
 # msgctxt "#30301"
@@ -129,9 +137,9 @@ msgstr "Doorzoek de catalogus"
 # msgid "Unavailable video"
 # msgstr "Onbeschikbare video"
 
-# msgctxt "#30712"
-# msgid "The video is unavailable and can't be played right now."
-# msgstr "Deze video is niet beschikbaar en kan nu niet worden afgespeeld."
+msgctxt "#30712"
+msgid "The video is unavailable and can't be played right now."
+msgstr "Deze video is niet beschikbaar en kan nu niet worden afgespeeld."
 
 # msgctxt "#30713"
 # msgid "The requested video was not found in the guide."

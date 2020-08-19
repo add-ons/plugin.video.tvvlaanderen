@@ -6,6 +6,8 @@ from __future__ import absolute_import, division, unicode_literals
 import logging
 from datetime import datetime
 
+import dateutil.parser
+import dateutil.tz
 import requests
 from requests import HTTPError
 
@@ -22,10 +24,10 @@ _SESSION.headers['User-Agent'] = \
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, radio=False):
+    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, radio=False, deals=None):
         """
-        :param EpgProgram epg_now:
-        :param EpgProgram epg_next:
+        :param Program epg_now:     The currently playing program on this channel.
+        :param Program epg_next:    The next playing program on this channel.
         """
         self.uid = uid
         self.title = title
@@ -35,6 +37,8 @@ class Channel:
         self.epg_now = epg_now
         self.epg_next = epg_next
         self.radio = radio
+
+        self.deals = deals
 
     def __repr__(self):
         return "%r" % self.__dict__
@@ -54,11 +58,11 @@ class StreamInfo:
         return "%r" % self.__dict__
 
 
-class EpgProgram:
-    """ Channel object """
+class Program:
+    """ Program object """
 
     def __init__(self, uid, title, description, cover, preview, start, end, channel_id, formats, genres, replay,
-                 restart, age, series_id=None, season=None, episode=None, credit=None):
+                 restart, age, series_id=None, season=None, episode=None, credit=None, deals=None):
         self.uid = uid
         self.title = title
         self.description = description
@@ -80,6 +84,8 @@ class EpgProgram:
         self.episode = episode
 
         self.credit = credit
+
+        self.deals = deals
 
     def __repr__(self):
         return "%r" % self.__dict__
@@ -138,6 +144,10 @@ def check_deals_entitlement(deals, offers):
     # deals = [{'offers': ['0', '1', '2', '11'], 'start': '2020-07-30T09:15:00Z', 'end': '2020-07-30T10:25:00Z'},
     #          {'offers': ['0', '1', '2', '11'], 'start': '2020-07-30T10:30:00Z', 'end': '2020-08-06T09:15:00Z'}]
 
+    # If we have no offers, allow everything
+    if not offers:
+        return False
+
     our_offers = set(offers)
     now = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
 
@@ -160,7 +170,7 @@ def check_deals_entitlement(deals, offers):
     return False
 
 
-def parse_channel(channel, offers=None):
+def parse_channel(channel):
     """ Parse the API result of a channel into a Channel object.
 
     :param dict channel:            The channel info from the API.
@@ -169,44 +179,42 @@ def parse_channel(channel, offers=None):
     :returns: A channel that is parsed.
     :rtype: Channel
     """
-    deals = channel.get('deals', [])
-    if not deals:
-        # No deal
-        return None
-
-    if offers and not check_deals_entitlement(deals, offers):
-        # We have no entitlement for this channel
-        return None
-
     return Channel(
         uid=channel.get('id'),
         title=channel.get('title'),
         icon=find_image(channel.get('images'), 'la'),
         preview=find_image(channel.get('images'), 'lv'),
         number=channel.get('params', {}).get('lcn'),
-        epg_now=parse_epg_program(channel.get('params', {}).get('now')),
-        epg_next=parse_epg_program(channel.get('params', {}).get('next')),
+        epg_now=parse_program(channel.get('params', {}).get('now')),
+        epg_next=parse_program(channel.get('params', {}).get('next')),
         radio=channel.get('params', {}).get('radio', False),
+        deals=channel.get('deals')
     )
 
 
-def parse_epg_program(program):
+def parse_program(program):
     """ Parse a program dict.
 
     :param dict program:            The program object to parse.
+
+    :returns: A program that is parsed.
     :rtype: Program
     """
     if not program:
         return None
 
-    return EpgProgram(
+    # Parse dates
+    start = dateutil.parser.parse(program.get('params', {}).get('start')).astimezone(dateutil.tz.gettz('CET'))
+    end = dateutil.parser.parse(program.get('params', {}).get('end')).astimezone(dateutil.tz.gettz('CET'))
+
+    return Program(
         uid=program.get('id'),
         title=program.get('title'),
         description=program.get('desc'),
         cover=find_image(program.get('images'), 'po'),  # portrait
         preview=find_image(program.get('images'), 'la'),  # landscape
-        start=program.get('params', {}).get('start'),
-        end=program.get('params', {}).get('end'),
+        start=start,
+        end=end,
         channel_id=program.get('params', {}).get('channelId'),
         formats=[format.get('title') for format in program.get('params', {}).get('formats')],
         genres=[genre.get('title') for genre in program.get('params', {}).get('genres')],
@@ -219,8 +227,21 @@ def parse_epg_program(program):
         credit=[
             Credit(credit.get('role'), credit.get('person'), credit.get('character'))
             for credit in program.get('params', {}).get('credits', [])
-        ]
+        ],
+        deals=program.get('deals')
     )
+
+
+def filter_unavailable_assets(assets, offers):
+    """ Filter out assets that are not playable in this subscription.
+
+    :param List[Program|Channel] assets:
+    :param dict offers:
+
+    :return: A filtered list of Programs and Channels
+    :rtype List[Program|Channel]
+    """
+    return [asset for asset in assets if not offers or check_deals_entitlement(asset.deals, offers)]
 
 
 def http_get(url, params=None, token_bearer=None, token_cookie=None):

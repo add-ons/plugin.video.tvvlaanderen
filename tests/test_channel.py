@@ -21,9 +21,12 @@ class TestChannel(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestChannel, self).__init__(*args, **kwargs)
 
-        self._auth = AuthApi(kodiutils.get_setting('username'), kodiutils.get_setting('password'), 'tvv',
+        self._auth = AuthApi(kodiutils.get_setting('username'),
+                             kodiutils.get_setting('password'),
+                             kodiutils.get_setting('tenant'),
                              kodiutils.get_tokens_path())
 
+    @unittest.skipUnless(kodiutils.get_setting('username') and kodiutils.get_setting('password'), 'Skipping since we have no credentials.')
     def test_get_channels(self):
         api = ChannelApi(self._auth)
 
@@ -38,7 +41,7 @@ class TestChannel(unittest.TestCase):
 
         channel_id = 'V6sXTJf1I6krfS3MRe0Dd5UGqFczlxHlZ86MLQ_R'  # VTM
 
-        channel = api.get_channel(channel_id)
+        channel = api.get_asset(channel_id)
         self.assertIsInstance(channel, Channel)
         print(channel)
 
@@ -57,7 +60,7 @@ class TestChannel(unittest.TestCase):
 
         channel_id = 'c2Zizb4y-j0jSz1je7joROr5YbwFwCVZpjVkTHAo'  # Love Nature HD
 
-        channel = api.get_channel(channel_id)
+        channel = api.get_asset(channel_id)
         self.assertIsInstance(channel, Channel)
 
         with self.assertRaises(NotAvailableInOfferException):

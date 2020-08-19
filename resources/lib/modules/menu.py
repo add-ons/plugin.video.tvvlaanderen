@@ -7,7 +7,7 @@ import logging
 
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
-from resources.lib.solocoo.util import Channel
+from resources.lib.solocoo.util import Channel, Program
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,31 +48,84 @@ class Menu:
 
         kodiutils.show_listing(listing, sort=['unsorted'])
 
-    @staticmethod
-    def generate_titleitem(item):
+    @classmethod
+    def generate_titleitem(cls, item):
         """ Generate a TitleItem.
         :param Union[Channel] item:         The item to convert to a TitleItem.
 
         :rtype: TitleItem
         """
         #
+        # Program
+        #
+        if isinstance(item, Program):
+            return TitleItem(
+                title=item.title,
+                path=kodiutils.url_for('play_asset', asset_id=item.uid),
+                art_dict={
+                    'cover': item.cover,
+                    'icon': item.preview,
+                    'thumb': item.preview,
+                    'fanart': item.preview,
+                },
+                info_dict={
+                    'tvshowtitle': item.title,
+                    'plot': item.description,
+                    'season': item.season,
+                    'episode': item.episode,
+                    'mediatype': 'episode',
+                },
+                is_playable=True,
+            )
+
+        #
         # Channel
         #
         if isinstance(item, Channel):
             return TitleItem(
                 title=item.title,
-                path=kodiutils.url_for('play_channel', channel=item.uid) + '?.pvr',
+                path=kodiutils.url_for('play_asset', asset_id=item.uid) + '?.pvr',
                 art_dict={
+                    'cover': item.icon,
                     'icon': item.icon,
                     'thumb': item.icon,
-                    'fanart': item.preview,
+                    # 'fanart': item.preview,  # Preview doesn't seem to work on most channels
                 },
                 info_dict={
-                    'plot': None, # TODO: format plot
+                    'title': item.title,
+                    'plot': cls._format_channel_plot(item),
                     'playcount': 0,
                     'mediatype': 'video',
+                },
+                prop_dict={
+                    'inputstream.adaptive.manifest_update_parameter': 'full',
                 },
                 is_playable=True,
             )
 
-        raise Exception('Unknown type')
+        raise Exception('Unknown type: %s' % item)
+
+    @classmethod
+    def _format_channel_plot(cls, channel):
+        """ Format a plot for a channel.
+
+        :param Channel channel:     The channel we want to have a plot for.
+
+        :return A formatted plot for this channel.
+        :rtype str
+        """
+        plot = ''
+
+        if channel.epg_now:
+            plot += kodiutils.localize(30213,  # Now
+                                       start=channel.epg_now.start.strftime('%H:%M'),
+                                       end=channel.epg_now.end.strftime('%H:%M'),
+                                       title=channel.epg_now.title) + "\n"
+
+        if channel.epg_next:
+            plot += kodiutils.localize(30214,  # Next
+                                       start=channel.epg_next.start.strftime('%H:%M'),
+                                       end=channel.epg_next.end.strftime('%H:%M'),
+                                       title=channel.epg_next.title) + "\n"
+
+        return plot

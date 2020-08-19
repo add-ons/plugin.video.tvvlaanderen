@@ -5,6 +5,7 @@
         <setting label="30801" type="lsep"/> <!-- Credentials -->
         <setting label="30802" type="text" id="username"/>
         <setting label="30803" type="text" id="password" option="hidden"/>
+        <setting               type="text" id="tenant" default="tvv" visible="false"/>
     </category>
 <!--    <category label="30820"> &lt;!&ndash; Interface &ndash;&gt;-->
 <!--        <setting label="30821" type="lsep"/> &lt;!&ndash; Metadata &ndash;&gt;-->

@@ -18,15 +18,15 @@ class Channels:
 
     def __init__(self):
         """ Initialise object """
-        # TODO: hardcoded tvv
         auth = AuthApi(username=kodiutils.get_setting('username'),
                        password=kodiutils.get_setting('password'),
-                       tenant='tvv',
+                       tenant=kodiutils.get_setting('tenant'),
                        token_path=kodiutils.get_tokens_path())
         self._channel_api = ChannelApi(auth)
 
     def show_channels(self):
         """ Shows TV channels """
         channels = self._channel_api.get_channels()
+
         listing = [Menu.generate_titleitem(channel) for channel in channels]
         kodiutils.show_listing(listing, 30007)

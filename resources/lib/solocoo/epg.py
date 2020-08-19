@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import dateutil.tz
 
 from resources.lib.solocoo import SOLOCOO_API, util
-from resources.lib.solocoo.util import parse_epg_program
+from resources.lib.solocoo.util import parse_program
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class EpgApi:
         data = json.loads(reply.text)
 
         # Parse to a dict (channel: list[Program])
-        programs = {channel: [parse_epg_program(program) for program in programs]
+        programs = {channel: [parse_program(program) for program in programs]
                     for channel, programs in data.get('epg', []).items()}
 
         return programs
@@ -73,7 +73,7 @@ class EpgApi:
         data = json.loads(reply.text)
 
         # Parse to a Program object
-        return parse_epg_program(data)
+        return parse_program(data)
 
     @staticmethod
     def _parse_date(date):

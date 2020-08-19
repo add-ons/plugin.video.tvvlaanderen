@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, unicode_literals
 import logging
 
 from resources.lib import kodiutils
+from resources.lib.modules.menu import Menu
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException
@@ -18,39 +19,33 @@ class Player:
 
     def __init__(self):
         """ Initialise object """
-        # TODO: hardcoded tvv
         auth = AuthApi(username=kodiutils.get_setting('username'),
                        password=kodiutils.get_setting('password'),
-                       tenant='tvv',
+                       tenant=kodiutils.get_setting('tenant'),
                        token_path=kodiutils.get_tokens_path())
         self._channel_api = ChannelApi(auth)
 
-    def channel(self, channel_id):
-        """ Play the live channel.
+    def play_asset(self, asset_id):
+        """ Play an asset (can be a program of a live channel).
 
-        :param string channel_id:       The ID of the channel to play.
+        :param string asset_id:       The ID of the asset to play.
         """
-        channel_info = self._channel_api.get_channel(channel_id)
-        info_dict = {
-            'title': channel_info.epg_now.title,
-            'plot': channel_info.epg_now.description,
-        }
-        art_dict = {
-            'thumb': channel_info.epg_now.preview,
-            'cover': channel_info.epg_now.cover,
-        }
+        # Get asset info
+        asset = self._channel_api.get_asset(asset_id)
+        item = Menu.generate_titleitem(asset)
 
+        # Get stream info
         try:
-            stream_info = self._channel_api.get_stream(channel_id)
+            stream_info = self._channel_api.get_stream(asset_id)
         except NotAvailableInOfferException as exc:
-            # TODO: show nice error dialog
             _LOGGER.error(exc)
+            kodiutils.ok_dialog(message=kodiutils.localize(30712))
             return
 
         license_key = self._create_license_key(stream_info.drm_license_url)
 
         _LOGGER.debug('Starting playing %s with license key %s', stream_info.url, license_key)
-        kodiutils.play(stream_info.url, license_key, channel_info.title, art_dict, info_dict)
+        kodiutils.play(stream_info.url, license_key, item.title, item.art_dict, item.info_dict, item.prop_dict)
 
     @staticmethod
     def _create_license_key(key_url, key_type='R', key_headers=None, key_value=None):

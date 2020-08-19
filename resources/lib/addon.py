@@ -28,11 +28,11 @@ def show_channels():
     Channels().show_channels()
 
 
-@routing.route('/play/channel/<channel>')
-def play_channel(channel):
-    """ PLay a Live TV channel """
+@routing.route('/play/asset/<asset_id>')
+def play_asset(asset_id):
+    """ PLay a Program """
     from resources.lib.modules.player import Player
-    Player().channel(channel)
+    Player().play_asset(asset_id)
 
 
 @routing.route('/search')
