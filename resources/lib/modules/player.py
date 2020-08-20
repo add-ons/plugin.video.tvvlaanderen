@@ -42,7 +42,8 @@ class Player:
             kodiutils.ok_dialog(message=kodiutils.localize(30712))
             return
 
-        license_key = self._create_license_key(stream_info.drm_license_url)
+        license_key = self._create_license_key(stream_info.drm_license_url,
+                                               key_headers={'Content-Type': 'application/octet-stream'})
 
         _LOGGER.debug('Starting playing %s with license key %s', stream_info.url, license_key)
         kodiutils.play(stream_info.url, license_key, item.title, item.art_dict, item.info_dict, item.prop_dict)
