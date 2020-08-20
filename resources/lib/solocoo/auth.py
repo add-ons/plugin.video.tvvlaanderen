@@ -344,7 +344,7 @@ class AuthApi:
         """ Load tokens from cache """
         try:
             with open(os.path.join(self._token_path, self.TOKEN_FILE), 'r') as fdesc:
-                self._account.__dict__ = json.loads(fdesc.read())
+                self._account.__dict__ = json.loads(fdesc.read())  # pylint: disable=attribute-defined-outside-init
         except (IOError, TypeError, ValueError):
             _LOGGER.warning('We could not use the cache since it is invalid or non-existent.')
 

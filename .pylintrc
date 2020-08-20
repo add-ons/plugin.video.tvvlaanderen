@@ -6,6 +6,7 @@ disable=
     fixme,
     import-outside-toplevel,
     line-too-long,
+    no-init,
     old-style-class,
     too-few-public-methods,
     too-many-arguments,
