@@ -242,7 +242,7 @@ def http_get(url, params=None, token_bearer=None, token_cookie=None):
     :param str token_cookie:        The token to use in Cookie authentication.
 
     :returns:                       The HTTP Response object.
-    :rtype: Response
+    :rtype: requests.Response
     """
     try:
         return _request('GET', url=url, params=params, token_bearer=token_bearer, token_cookie=token_cookie)
@@ -286,7 +286,7 @@ def _request(method, url, params=None, form=None, data=None, token_bearer=None, 
     :param str token_cookie:        The token to use in Cookie authentication.
 
     :returns:                       The HTTP Response object.
-    :rtype: Response
+    :rtype: requests.Response
     """
     _LOGGER.debug('Sending %s %s... (%s)', method, url, form or data)
 

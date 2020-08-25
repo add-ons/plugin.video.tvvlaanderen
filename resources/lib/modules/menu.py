@@ -16,11 +16,11 @@ class Menu:
     """ Menu code """
 
     def __init__(self):
-        """ Initialise object """
+        """ Initialise object. """
 
     @staticmethod
     def show_mainmenu():
-        """ Show the main menu """
+        """ Show the main menu. """
         listing = [
             TitleItem(
                 title=kodiutils.localize(30007),  # TV Channels
@@ -51,6 +51,7 @@ class Menu:
     @classmethod
     def generate_titleitem(cls, item):
         """ Generate a TitleItem.
+
         :param Union[Channel] item:         The item to convert to a TitleItem.
 
         :rtype: TitleItem

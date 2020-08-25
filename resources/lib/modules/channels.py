@@ -17,10 +17,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Channels:
-    """ Menu code related to channels """
+    """ Menu code related to channels. """
 
     def __init__(self):
-        """ Initialise object """
+        """ Initialise object. """
         auth = AuthApi(username=kodiutils.get_setting('username'),
                        password=kodiutils.get_setting('password'),
                        tenant=kodiutils.get_setting('tenant'),
@@ -30,7 +30,7 @@ class Channels:
         self._epg_api = EpgApi(auth)
 
     def show_channels(self):
-        """ Shows TV channels """
+        """ Shows TV channels. """
         channels = self._channel_api.get_channels(False)
 
         listing = []
@@ -54,7 +54,7 @@ class Channels:
         kodiutils.show_listing(listing, 30007)
 
     def show_channel(self, channel_id):
-        """ Shows TV channel details
+        """ Shows TV channel details.
 
         :param str channel_id:          The channel we want to display.
         """
@@ -91,7 +91,7 @@ class Channels:
         kodiutils.show_listing(listing, 30007)
 
     def show_channel_guide(self, channel_id):
-        """ Shows the dates in the tv guide
+        """ Shows the dates in the tv guide.
 
         :param str channel_id:          The channel for which we want to show an EPG.
         """
@@ -118,7 +118,7 @@ class Channels:
         kodiutils.show_listing(listing, 30013, content='files')
 
     def show_channel_guide_detail(self, channel_id, date):
-        """ Shows the dates in the tv guide
+        """ Shows the dates in the tv guide.
 
         :param str channel_id:          The channel for which we want to show an EPG.
         :param str date:                The date to show.
@@ -132,6 +132,8 @@ class Channels:
     @staticmethod
     def _get_dates(date_format):
         """ Return a dict of dates.
+
+        :param str date_format:         The date format to use for the labels.
 
         :rtype: list[dict]
         """

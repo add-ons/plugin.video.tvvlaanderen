@@ -25,8 +25,9 @@ class Search:
         self._search_api = SearchApi(auth)
 
     def show_search(self, query=None):
-        """ Shows the search dialog
-        :type query: str
+        """ Shows the search dialog.
+
+        :param str query:               The query to search for.
         """
         if not query:
             # Ask for query
