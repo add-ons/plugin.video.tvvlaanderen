@@ -8,6 +8,7 @@ import logging
 from datetime import datetime, timedelta
 
 import dateutil.tz
+import dateutil.parser
 
 from resources.lib.solocoo import SOLOCOO_API, util
 from resources.lib.solocoo.util import parse_program
@@ -37,8 +38,9 @@ class EpgApi:
         if not isinstance(channels, list):
             channels = [channels]
 
-        # _LOGGER.debug('Requesting entitlements')
-        # entitlements = self._auth.list_entitlements()
+        _LOGGER.debug('Requesting entitlements')
+        entitlements = self._auth.list_entitlements()
+        offers = entitlements.get('offers', [])
 
         # Generate dates in UTC format
         # TODO: this could be cleaner. We need times in Zulu timezone.
@@ -57,7 +59,7 @@ class EpgApi:
         data = json.loads(reply.text)
 
         # Parse to a dict (channel: list[Program])
-        programs = {channel: [parse_program(program) for program in programs]
+        programs = {channel: [parse_program(program, offers) for program in programs]
                     for channel, programs in data.get('epg', []).items()}
 
         return programs
@@ -90,7 +92,7 @@ class EpgApi:
         elif date == 'tomorrow':
             date_obj = (datetime.today() + timedelta(days=1))
         else:
-            date_obj = date  # TODO: parse date to an datetime object
+            date_obj = dateutil.parser.parse(date)
 
         # Mark as midnight
         date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=dateutil.tz.gettz('CET'))

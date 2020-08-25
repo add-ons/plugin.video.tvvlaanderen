@@ -41,13 +41,21 @@ msgstr "Doorzoek de catalogus"
 
 
 ### SUBMENUS
-# msgctxt "#30053"
-# msgid "TV Guide for [B]{channel}[/B]"
-# msgstr "Tv-gids voor [B]{channel}[/B]"
+msgctxt "#30051"
+msgid "Watch live [B]{channel}[/B]"
+msgstr "Kijk live [B]{channel}[/B]"
 
-# msgctxt "#30054"
-# msgid "Browse the TV Guide for [B]{channel}[/B]"
-# msgstr "Doorblader de tv-gids voor [B]{channel}[/B]"
+msgctxt "#30052"
+msgid "Restart [B]{program}[/B] from the beginning"
+msgstr "Herstart [B]{program}[/B] vanaf het begin"
+
+msgctxt "#30053"
+msgid "TV Guide for [B]{channel}[/B]"
+msgstr "Tv-gids voor [B]{channel}[/B]"
+
+msgctxt "#30054"
+msgid "Browse the TV Guide for [B]{channel}[/B]"
+msgstr "Doorblader de tv-gids voor [B]{channel}[/B]"
 
 # msgctxt "#30055"
 # msgid "Catalog for [B]{channel}[/B]"
@@ -103,17 +111,17 @@ msgstr "[B]Straks:[/B] {start} - {end}\n» {title}"
 
 
 ### Dates
-# msgctxt "#30301"
-# msgid "Yesterday"
-# msgstr "Gisteren"
+msgctxt "#30301"
+msgid "Yesterday"
+msgstr "Gisteren"
 
-# msgctxt "#30302"
-# msgid "Today"
-# msgstr "Vandaag"
+msgctxt "#30302"
+msgid "Today"
+msgstr "Vandaag"
 
-# msgctxt "#30303"
-# msgid "Tomorrow"
-# msgstr "Morgen"
+msgctxt "#30303"
+msgid "Tomorrow"
+msgstr "Morgen"
 
 
 ### MESSAGES
