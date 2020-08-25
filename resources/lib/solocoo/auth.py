@@ -21,9 +21,9 @@ except ImportError:  # Python 2
     import pyjwt as jwt
 
 try:  # Python 3
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import urlparse, parse_qs, urljoin
 except ImportError:  # Python 2
-    from urlparse import urlparse, parse_qs
+    from urlparse import urlparse, parse_qs, urljoin
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -134,7 +134,7 @@ class AuthApi:
                                                              self._account.challenge_secret,
                                                              self._account.device_serial)
         except HTTPError as ex:
-            if ex.response.status_code == 403:
+            if ex.response.status_code in [403, 500]:
                 # Our challenge_id and challenge_secret isn't valid anymore
                 _LOGGER.info('The challenge_id and challenge_secret are not valid anymore. Requesting new ones.')
                 self._account.challenge_id, self._account.challenge_secret = self._do_challenge(
@@ -217,7 +217,7 @@ class AuthApi:
         # other providers.
 
         # Ask to forward us to the login form.
-        util.http_get(
+        login_page = util.http_get(
             'https://{domain}/{env}/sso.aspx'.format(domain=self._tenant.get('domain'),
                                                      env=self._tenant.get('env')),
             params=dict(
@@ -226,11 +226,12 @@ class AuthApi:
             )
         )
 
-        # TODO: we could extract the correct url from the form in the html, but this is probably provider dependant anyway.
+        # Extract the path from the form, the form posts to /
+        login_url = urljoin(login_page.url, '/')
 
         # Submit credentials
         reply = util.http_post(
-            'https://{auth}/'.format(auth=self._tenant.get('auth')),
+            login_url,
             form=dict(
                 Username=username,
                 Password=password,
