@@ -1,7 +1,7 @@
 [MESSAGES CONTROL]
 disable=
     bad-option-value,
-    cyclic-import, # This shoud be fixed
+    cyclic-import, # This should be fixed
     duplicate-code,
     fixme,
     import-outside-toplevel,
@@ -14,3 +14,6 @@ disable=
     too-many-instance-attributes,
     too-many-locals,
     too-many-public-methods,
+
+    super-with-arguments, # Python 2.7 compatibility
+    raise-missing-from, # Python 2.7 compatibility

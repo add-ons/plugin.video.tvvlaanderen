@@ -28,6 +28,27 @@ def show_channels():
     Channels().show_channels()
 
 
+@routing.route('/channel/<channel_id>')
+def show_channel(channel_id):
+    """ Shows Live TV channel details """
+    from resources.lib.modules.channels import Channels
+    Channels().show_channel(channel_id)
+
+
+@routing.route('/channel/<channel_id>/guide')
+def show_channel_guide(channel_id):
+    """ Shows Live TV channel guide """
+    from resources.lib.modules.channels import Channels
+    Channels().show_channel_guide(channel_id)
+
+
+@routing.route('/channel/<channel_id>/guide/<date>')
+def show_channel_guide_detail(channel_id, date):
+    """ Shows Live TV channel guide details """
+    from resources.lib.modules.channels import Channels
+    Channels().show_channel_guide_detail(channel_id, date)
+
+
 @routing.route('/play/asset/<asset_id>')
 def play_asset(asset_id):
     """ PLay a Program """

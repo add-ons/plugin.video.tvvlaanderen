@@ -59,9 +59,20 @@ class Menu:
         # Program
         #
         if isinstance(item, Program):
-            return TitleItem(
+            title = '{time} - {title}'.format(
+                time=item.start.strftime('%H:%M'),
                 title=item.title,
-                path=kodiutils.url_for('play_asset', asset_id=item.uid),
+            )
+
+            if item.replay and item.available:
+                path = kodiutils.url_for('play_asset', asset_id=item.uid)
+            else:
+                path = None
+                title = '[COLOR gray]' + title + '[/COLOR]'
+
+            return TitleItem(
+                title=title,
+                path=path,
                 art_dict={
                     'cover': item.cover,
                     'icon': item.preview,
@@ -75,7 +86,11 @@ class Menu:
                     'episode': item.episode,
                     'mediatype': 'episode',
                 },
-                is_playable=True,
+                prop_dict={
+                    'inputstream.adaptive.play_timeshift_buffer': 'true',  # Play from the beginning
+                    'inputstream.adaptive.manifest_update_parameter': 'full',
+                },
+                is_playable=path is not None,
             )
 
         #

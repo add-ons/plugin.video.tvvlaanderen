@@ -32,6 +32,7 @@ class SearchApi:
         """
         _LOGGER.debug('Requesting entitlements')
         entitlements = self._auth.list_entitlements()
+        offers = entitlements.get('offers', [])
 
         _LOGGER.debug('Requesting search listing')
         reply = util.http_get(SOLOCOO_API + '/search', params=dict(query=query), token_bearer=self._tokens.jwt_token)
@@ -41,16 +42,16 @@ class SearchApi:
 
         # Parse EPG
         results_epg = next((c for c in data.get('collection') if c.get('label') == 'sg.ui.search.epg'), {})
-        results.extend([util.parse_channel(asset)
+        results.extend([util.parse_channel(asset, offers)
                         for asset in results_epg.get('assets', [])
                         if asset.get('type') == ASSET_TYPE_CHANNEL])
 
         # Parse replay
         replay = next((c for c in data.get('collection') if c.get('label') == 'sg.ui.search.replay'), {})
-        results.extend([util.parse_program(asset)
+        results.extend([util.parse_program(asset, offers)
                         for asset in replay.get('assets', [])])
 
         # Filter only available channels
-        results = util.filter_unavailable_assets(results, entitlements.get('offers', []))
+        results = [result for result in results if result.available]
 
         return results

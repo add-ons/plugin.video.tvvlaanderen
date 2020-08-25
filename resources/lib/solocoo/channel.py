@@ -40,6 +40,7 @@ class ChannelApi:
         """
         _LOGGER.debug('Requesting entitlements')
         entitlements = self._auth.list_entitlements()
+        offers = entitlements.get('offers', [])
 
         _LOGGER.debug('Requesting channel listing')
         reply = util.http_get(SOLOCOO_API + '/bouquet', token_bearer=self._tokens.jwt_token)
@@ -47,12 +48,12 @@ class ChannelApi:
 
         # Parse list to Channel objects
         channels = [
-            parse_channel(channel.get('assetInfo', {}))
+            parse_channel(channel.get('assetInfo', {}), offers)
             for channel in data.get('channels', [])
         ]
 
         # Filter only available channels
-        channels = util.filter_unavailable_assets(channels, entitlements.get('offers', []))
+        channels = [channel for channel in channels if channel.available]
 
         # Load EPG details for all channels at once
         if include_epg:
@@ -72,6 +73,8 @@ class ChannelApi:
 
     def get_current_epg(self, channels):
         """ Get the currently playing program.
+
+        :param list[str] channels:          The channels for which we want to request an EPG.
 
         :returns: A dictionary with the channels as key and a list of Programs as value.
         :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
@@ -108,7 +111,7 @@ class ChannelApi:
         :returns: The requested asset.
         :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
         """
-        _LOGGER.debug('Requesting channel %s', asset_id)
+        _LOGGER.debug('Requesting asset %s', asset_id)
         reply = util.http_get(SOLOCOO_API + '/assets/{asset_id}'.format(asset_id=asset_id),
                               token_bearer=self._tokens.jwt_token)
         data = json.loads(reply.text)

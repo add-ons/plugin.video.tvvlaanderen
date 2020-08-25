@@ -24,7 +24,7 @@ _SESSION.headers['User-Agent'] = \
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, radio=False, deals=None):
+    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, radio=False, available=None):
         """
         :param Program epg_now:     The currently playing program on this channel.
         :param Program epg_next:    The next playing program on this channel.
@@ -38,7 +38,7 @@ class Channel:
         self.epg_next = epg_next
         self.radio = radio
 
-        self.deals = deals
+        self.available = available
 
     def __repr__(self):
         return "%r" % self.__dict__
@@ -62,7 +62,7 @@ class Program:
     """ Program object """
 
     def __init__(self, uid, title, description, cover, preview, start, end, channel_id, formats, genres, replay,
-                 restart, age, series_id=None, season=None, episode=None, credit=None, deals=None):
+                 restart, age, series_id=None, season=None, episode=None, credit=None, available=None):
         self.uid = uid
         self.title = title
         self.description = description
@@ -85,7 +85,7 @@ class Program:
 
         self.credit = credit
 
-        self.deals = deals
+        self.available = available
 
     def __repr__(self):
         return "%r" % self.__dict__
@@ -170,7 +170,7 @@ def check_deals_entitlement(deals, offers):
     return False
 
 
-def parse_channel(channel):
+def parse_channel(channel, offers=None):
     """ Parse the API result of a channel into a Channel object.
 
     :param dict channel:            The channel info from the API.
@@ -188,14 +188,15 @@ def parse_channel(channel):
         epg_now=parse_program(channel.get('params', {}).get('now')),
         epg_next=parse_program(channel.get('params', {}).get('next')),
         radio=channel.get('params', {}).get('radio', False),
-        deals=channel.get('deals')
+        available=check_deals_entitlement(channel.get('deals'), offers) if offers else True,
     )
 
 
-def parse_program(program):
+def parse_program(program, offers=None):
     """ Parse a program dict.
 
     :param dict program:            The program object to parse.
+    :param List[str] offers:        A list of offers that we have.
 
     :returns: A program that is parsed.
     :rtype: Program
@@ -228,20 +229,8 @@ def parse_program(program):
             Credit(credit.get('role'), credit.get('person'), credit.get('character'))
             for credit in program.get('params', {}).get('credits', [])
         ],
-        deals=program.get('deals')
+        available=check_deals_entitlement(program.get('deals'), offers) if offers else True,
     )
-
-
-def filter_unavailable_assets(assets, offers):
-    """ Filter out assets that are not playable in this subscription.
-
-    :param List[Program|Channel] assets:
-    :param dict offers:
-
-    :return: A filtered list of Programs and Channels
-    :rtype List[Program|Channel]
-    """
-    return [asset for asset in assets if not offers or check_deals_entitlement(asset.deals, offers)]
 
 
 def http_get(url, params=None, token_bearer=None, token_cookie=None):

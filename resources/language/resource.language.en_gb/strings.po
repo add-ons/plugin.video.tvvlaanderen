@@ -40,13 +40,21 @@ msgstr ""
 
 
 ### SUBMENUS
-# msgctxt "#30053"
-# msgid "TV Guide for [B]{channel}[/B]"
-# msgstr ""
+msgctxt "#30051"
+msgid "Watch live [B]{channel}[/B]"
+msgstr ""
 
-# msgctxt "#30054"
-# msgid "Browse the TV Guide for [B]{channel}[/B]"
-# msgstr ""
+msgctxt "#30052"
+msgid "Restart [B]{program}[/B] from the beginning"
+msgstr ""
+
+msgctxt "#30053"
+msgid "TV Guide for [B]{channel}[/B]"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Browse the TV Guide for [B]{channel}[/B]"
+msgstr ""
 
 # msgctxt "#30055"
 # msgid "Catalog for [B]{channel}[/B]"
@@ -102,17 +110,17 @@ msgstr ""
 
 
 ### Dates
-# msgctxt "#30301"
-# msgid "Yesterday"
-# msgstr ""
+msgctxt "#30301"
+msgid "Yesterday"
+msgstr ""
 
-# msgctxt "#30302"
-# msgid "Today"
-# msgstr ""
+msgctxt "#30302"
+msgid "Today"
+msgstr ""
 
-# msgctxt "#30303"
-# msgid "Tomorrow"
-# msgstr ""
+msgctxt "#30303"
+msgid "Tomorrow"
+msgstr ""
 
 
 ### MESSAGES

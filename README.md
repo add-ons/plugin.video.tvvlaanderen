@@ -23,8 +23,8 @@ Je kan de [laatste release](https://github.com/add-ons/plugin.video.tvvlaanderen
 
 De volgende features worden ondersteund:
 * Live TV
-* Restart TV (TODO)
-* Replay TV (TODO)
+* Restart TV
+* Replay TV
 
 ## Disclaimer
 
