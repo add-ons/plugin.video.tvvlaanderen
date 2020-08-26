@@ -49,7 +49,7 @@ class ChannelApi:
         # Parse list to Channel objects
         channels = [
             parse_channel(channel.get('assetInfo', {}), offers)
-            for channel in data.get('channels', [])
+            for channel in data.get('channels', []) if channel.get('alias', False) is False
         ]
 
         # Filter only available channels
