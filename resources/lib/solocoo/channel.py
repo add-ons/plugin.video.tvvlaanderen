@@ -12,7 +12,7 @@ import dateutil.tz
 from requests import HTTPError
 
 from resources.lib.solocoo import SOLOCOO_API, util
-from resources.lib.solocoo.exceptions import NotAvailableInOfferException
+from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException
 from resources.lib.solocoo.util import parse_channel, StreamInfo, parse_program
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,13 +36,11 @@ class ChannelApi:
         """ Get all channels.
 
         :returns: A list of all channels.
-        :rtype: List[Channel]
+        :rtype: list[resources.lib.solocoo.util.Channel]
         """
-        _LOGGER.debug('Requesting entitlements')
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])
 
-        _LOGGER.debug('Requesting channel listing')
         reply = util.http_get(SOLOCOO_API + '/bouquet', token_bearer=self._tokens.jwt_token)
         data = json.loads(reply.text)
 
@@ -53,9 +51,10 @@ class ChannelApi:
         ]
 
         # Filter only available channels
-        channels = [channel for channel in channels if channel.available]
+        channels = [channel for channel in channels if channel.available is not False]
 
         # Load EPG details for all channels at once
+        # TODO request maximum 10 at a time
         if include_epg:
             epg = self.get_current_epg([channel.uid for channel in channels])
             for channel in channels:
@@ -111,7 +110,6 @@ class ChannelApi:
         :returns: The requested asset.
         :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
         """
-        _LOGGER.debug('Requesting asset %s', asset_id)
         reply = util.http_get(SOLOCOO_API + '/assets/{asset_id}'.format(asset_id=asset_id),
                               token_bearer=self._tokens.jwt_token)
         data = json.loads(reply.text)
@@ -123,6 +121,62 @@ class ChannelApi:
             return parse_channel(data)
 
         raise Exception('Unknown asset type: %s' % data.get('type'))
+
+    def get_replay(self, channel_id):
+        """ Get a list of programs that are replayable from the given channel.
+
+        :param str channel_id:          The ID of the asset
+
+        :returns: A list of Programs.
+        :rtype: list[resources.lib.solocoo.util.Program]
+        """
+        entitlements = self._auth.list_entitlements()
+        offers = entitlements.get('offers', [])
+
+        # Execute query
+        reply = util.http_get(SOLOCOO_API + '/assets',
+                              params={
+                                  'query': 'replay,groupedseries,station,' + channel_id,
+                                  'limit': 1000,
+                              },
+                              token_bearer=self._tokens.jwt_token)
+        data = json.loads(reply.text)
+
+        # Parse list to Program objects
+        programs = [
+            parse_program(program, offers)
+            for program in data.get('assets', [])
+        ]
+
+        return programs
+
+    def get_series(self, series_id):
+        """ Get a list of programs of the specified series.
+
+        :param str series_id:          The ID of the series.
+
+        :returns: A list of Programs.
+        :rtype: list[resources.lib.solocoo.util.Program]
+        """
+        entitlements = self._auth.list_entitlements()
+        offers = entitlements.get('offers', [])
+
+        # Execute query
+        reply = util.http_get(SOLOCOO_API + '/assets',
+                              params={
+                                  'query': 'replayepisodes,' + series_id,
+                                  'limit': 1000,
+                              },
+                              token_bearer=self._tokens.jwt_token)
+        data = json.loads(reply.text)
+
+        # Parse list to Program objects
+        programs = [
+            parse_program(program, offers)
+            for program in data.get('assets', [])
+        ]
+
+        return programs
 
     def get_stream(self, asset_id):
         """ Get stream information for the requested asset.
@@ -152,6 +206,8 @@ class ChannelApi:
         except HTTPError as ex:
             if ex.response.status_code == 402:
                 raise NotAvailableInOfferException
+            if ex.response.status_code == 404:
+                raise UnavailableException
             raise
 
         data = json.loads(reply.text)

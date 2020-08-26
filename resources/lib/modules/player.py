@@ -9,7 +9,8 @@ from resources.lib import kodiutils
 from resources.lib.modules.menu import Menu
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
-from resources.lib.solocoo.exceptions import NotAvailableInOfferException
+from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException
+from resources.lib.solocoo.util import Program, Channel
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,18 +33,21 @@ class Player:
         """
         # Get asset info
         asset = self._channel_api.get_asset(asset_id)
-        item = Menu.generate_titleitem(asset)
+
+        if isinstance(asset, Program):
+            item = Menu.generate_titleitem_program(asset)
+        elif isinstance(asset, Channel):
+            item = Menu.generate_titleitem_channel(asset)
 
         # Get stream info
         try:
             stream_info = self._channel_api.get_stream(asset_id)
-        except NotAvailableInOfferException as exc:
+        except (NotAvailableInOfferException, UnavailableException) as exc:
             _LOGGER.error(exc)
             kodiutils.ok_dialog(message=kodiutils.localize(30712))
             return
 
-        license_key = self._create_license_key(stream_info.drm_license_url,
-                                               key_headers={'Content-Type': 'application/octet-stream'})
+        license_key = self._create_license_key(stream_info.drm_license_url, key_headers={'Content-Type': 'application/octet-stream'})
 
         _LOGGER.debug('Starting playing %s with license key %s', stream_info.url, license_key)
         kodiutils.play(stream_info.url, license_key, item.title, item.art_dict, item.info_dict, item.prop_dict)

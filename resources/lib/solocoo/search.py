@@ -28,7 +28,7 @@ class SearchApi:
 
         :returns: A list of results.
 
-        :rtype: List[]
+        :rtype: list[resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program]
         """
         _LOGGER.debug('Requesting entitlements')
         entitlements = self._auth.list_entitlements()
@@ -50,8 +50,5 @@ class SearchApi:
         replay = next((c for c in data.get('collection') if c.get('label') == 'sg.ui.search.replay'), {})
         results.extend([util.parse_program(asset, offers)
                         for asset in replay.get('assets', [])])
-
-        # Filter only available channels
-        results = [result for result in results if result.available]
 
         return results

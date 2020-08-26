@@ -49,20 +49,20 @@ msgid "Restart [B]{program}[/B] from the beginning"
 msgstr ""
 
 msgctxt "#30053"
-msgid "TV Guide for [B]{channel}[/B]"
+msgid "TV guide for [B]{channel}[/B]"
 msgstr ""
 
 msgctxt "#30054"
-msgid "Browse the TV Guide for [B]{channel}[/B]"
+msgid "Browse the TV guide for [B]{channel}[/B]"
 msgstr ""
 
-# msgctxt "#30055"
-# msgid "Catalog for [B]{channel}[/B]"
-# msgstr ""
+msgctxt "#30055"
+msgid "Replay for [B]{channel}[/B]"
+msgstr ""
 
-# msgctxt "#30056"
-# msgid "Browse the Catalog for [B]{channel}[/B]"
-# msgstr ""
+msgctxt "#30056"
+msgid "Browse the replay catalog for [B]{channel}[/B]"
+msgstr ""
 
 # msgctxt "#30057"
 # msgid "Categories for [B]{channel}[/B]"
@@ -99,6 +99,26 @@ msgstr ""
 # msgctxt "#30206"
 # msgid "Watch [B]{label}[/B] on YouTube"
 # msgstr ""
+
+msgctxt "#30208"
+msgid "[B]{days} days[/B] remaining"
+msgstr ""
+
+msgctxt "#30209"
+msgid "[B]1 day[/B] remaining"
+msgstr ""
+
+msgctxt "#30210"
+msgid "[B]{hours} hours[/B] remaining"
+msgstr ""
+
+msgctxt "#30211"
+msgid "[B]1 hour[/B] remaining"
+msgstr ""
+
+msgctxt "#30212"
+msgid "[B]less then 1 hour[/B] remaining"
+msgstr ""
 
 msgctxt "#30213"
 msgid "[B]Now:[/B] {start} - {end}\n» {title}"

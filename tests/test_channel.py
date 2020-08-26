@@ -12,7 +12,7 @@ from resources.lib import kodiutils
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException
-from resources.lib.solocoo.util import Channel, StreamInfo
+from resources.lib.solocoo.util import Channel, StreamInfo, Program
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,10 +31,9 @@ class TestChannel(unittest.TestCase):
         api = ChannelApi(self._auth)
 
         channels = api.get_channels()
+        print(channels)
         self.assertIsInstance(channels, list)
         self.assertIsInstance(channels[0], Channel)
-
-        print(channels)
 
     def test_get_channel(self):
         api = ChannelApi(self._auth)
@@ -42,8 +41,8 @@ class TestChannel(unittest.TestCase):
         channel_id = 'V6sXTJf1I6krfS3MRe0Dd5UGqFczlxHlZ86MLQ_R'  # VTM
 
         channel = api.get_asset(channel_id)
-        self.assertIsInstance(channel, Channel)
         print(channel)
+        self.assertIsInstance(channel, Channel)
 
     @unittest.skipUnless(kodiutils.get_setting('username') and kodiutils.get_setting('password'), 'Skipping since we have no credentials.')
     def test_get_channel_stream(self):
@@ -52,8 +51,8 @@ class TestChannel(unittest.TestCase):
         channel_id = 'V6sXTJf1I6krfS3MRe0Dd5UGqFczlxHlZ86MLQ_R'  # VTM
 
         stream_info = api.get_stream(channel_id)
-        self.assertIsInstance(stream_info, StreamInfo)
         print(stream_info)
+        self.assertIsInstance(stream_info, StreamInfo)
 
     def test_get_channel_without_package(self):
         api = ChannelApi(self._auth)
@@ -65,6 +64,21 @@ class TestChannel(unittest.TestCase):
 
         with self.assertRaises(NotAvailableInOfferException):
             api.get_stream(channel_id)
+
+    def test_get_replay(self):
+        api = ChannelApi(self._auth)
+
+        channel_id = 'JIY-fyHDkM1Rk260f-WNXlVD8iYnlDtWOQ4ah0hb'  # één
+
+        programs = api.get_replay(channel_id)
+        print(programs)
+        self.assertIsInstance(programs, list)
+        self.assertIsInstance(programs[0], Program)
+
+        programs = api.get_series(programs[0].series_id)
+        print(programs)
+        self.assertIsInstance(programs, list)
+        self.assertIsInstance(programs[0], Program)
 
 
 if __name__ == '__main__':
