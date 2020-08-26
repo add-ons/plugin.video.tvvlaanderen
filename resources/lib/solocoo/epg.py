@@ -38,7 +38,6 @@ class EpgApi:
         if not isinstance(channels, list):
             channels = [channels]
 
-        _LOGGER.debug('Requesting entitlements')
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])
 

@@ -4,10 +4,12 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import logging
+from datetime import datetime
+
+import dateutil.tz
 
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
-from resources.lib.solocoo.util import Channel, Program
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,83 +51,152 @@ class Menu:
         kodiutils.show_listing(listing, sort=['unsorted'])
 
     @classmethod
-    def generate_titleitem(cls, item):
+    def generate_titleitem_series(cls, item):
         """ Generate a TitleItem.
 
-        :param Union[Channel] item:         The item to convert to a TitleItem.
+        :param resources.lib.solocoo.util.Program item:         The Program to convert to a TitleItem.
 
         :rtype: TitleItem
         """
-        #
-        # Program
-        #
-        if isinstance(item, Program):
+        return TitleItem(
+            title=item.title,
+            path=kodiutils.url_for('show_channel_replay_series', series_id=item.series_id),
+            art_dict={
+                'cover': item.cover,
+                'icon': item.preview,
+                'thumb': item.preview,
+                'fanart': item.preview,
+            },
+            info_dict={
+                'mpaa': item.age,
+                'tvshowtitle': item.title,
+                'title': item.title,
+                'plot': None,
+            },
+        )
+
+    @classmethod
+    def generate_titleitem_program(cls, item, timeline=False):
+        """ Generate a TitleItem.
+
+        :param resources.lib.solocoo.util.Program item:         The Program to convert to a TitleItem.
+        :param boolean timeline:     Indicates that this TitleItem will be used in a timeline.
+
+        :rtype: TitleItem
+        """
+        title = item.title
+
+        if item.season and item.episode:
+            title += ' (S%02dE%02d)' % (int(item.season), int(item.episode))
+        elif item.episode:
+            title += ' (E%02d)' % int(item.episode)
+
+        # Prepend a time when used in an EPG view
+        if timeline:
             title = '{time} - {title}'.format(
                 time=item.start.strftime('%H:%M'),
-                title=item.title,
-            )
-
-            if item.replay and item.available:
-                path = kodiutils.url_for('play_asset', asset_id=item.uid)
-            else:
-                path = None
-                title = '[COLOR gray]' + title + '[/COLOR]'
-
-            return TitleItem(
                 title=title,
-                path=path,
-                art_dict={
-                    'cover': item.cover,
-                    'icon': item.preview,
-                    'thumb': item.preview,
-                    'fanart': item.preview,
-                },
-                info_dict={
-                    'tvshowtitle': item.title,
-                    'plot': item.description,
-                    'season': item.season,
-                    'episode': item.episode,
-                    'mediatype': 'episode',
-                },
-                prop_dict={
-                    'inputstream.adaptive.play_timeshift_buffer': 'true',  # Play from the beginning
-                    'inputstream.adaptive.manifest_update_parameter': 'full',
-                },
-                is_playable=path is not None,
             )
 
-        #
-        # Channel
-        #
-        if isinstance(item, Channel):
-            return TitleItem(
-                title=item.title,
-                path=kodiutils.url_for('play_asset', asset_id=item.uid) + '?.pvr',
-                art_dict={
-                    'cover': item.icon,
-                    'icon': item.icon,
-                    'thumb': item.icon,
-                    # 'fanart': item.preview,  # Preview doesn't seem to work on most channels
-                },
-                info_dict={
-                    'title': item.title,
-                    'plot': cls._format_channel_plot(item),
-                    'playcount': 0,
-                    'mediatype': 'video',
-                },
-                prop_dict={
-                    'inputstream.adaptive.manifest_update_parameter': 'full',
-                },
-                is_playable=True,
-            )
+        # Gray out unavailable programs
+        if not item.replay or item.available is False:
+            title = '[COLOR gray]' + title + '[/COLOR]'
 
-        raise Exception('Unknown type: %s' % item)
+        return TitleItem(
+            title=title,
+            path=kodiutils.url_for('play_asset', asset_id=item.uid),
+            art_dict={
+                'cover': item.cover,
+                'icon': item.preview,
+                'thumb': item.preview,
+                'fanart': item.preview,
+            },
+            info_dict={
+                'tvshowtitle': item.title,
+                'title': title,
+                'plot': cls._format_program_plot(item),
+                'season': item.season,
+                'episode': item.episode,
+                'mpaa': item.age,
+                'mediatype': 'episode',
+                'aired': item.start.strftime('%Y-%m-%d'),
+                'date': item.start.strftime('%d.%m.%Y'),
+                'duration': item.duration,
+            },
+            prop_dict={
+                'inputstream.adaptive.play_timeshift_buffer': 'true',  # Play from the beginning
+                'inputstream.adaptive.manifest_update_parameter': 'full',
+            },
+            is_playable=True,
+        )
+
+    @classmethod
+    def generate_titleitem_channel(cls, item):
+        """ Generate a TitleItem for a Channel.
+
+        :param resources.lib.solocoo.util.Channel item:         The Channel to convert to a TitleItem.
+
+        :rtype: TitleItem
+        """
+        return TitleItem(
+            title=item.title,
+            path=kodiutils.url_for('play_asset', asset_id=item.uid) + '?.pvr',
+            art_dict={
+                'cover': item.icon,
+                'icon': item.icon,
+                'thumb': item.icon,
+                # 'fanart': item.preview,  # Preview doesn't seem to work on most channels
+            },
+            info_dict={
+                'title': item.title,
+                'plot': cls._format_channel_plot(item),
+                'playcount': 0,
+                'mediatype': 'video',
+            },
+            prop_dict={
+                'inputstream.adaptive.manifest_update_parameter': 'full',
+            },
+            is_playable=True,
+        )
+
+    @classmethod
+    def _format_program_plot(cls, program):
+        """ Format a plot for a program.
+
+        :param resources.lib.solocoo.util.Program program:     The program we want to have a plot for.
+
+        :return A formatted plot for this program.
+        :rtype str
+        """
+        plot = ''
+
+        # Add remaining
+        if isinstance(program.available, datetime):
+            time_left = (program.available - datetime.now(dateutil.tz.UTC))
+            if time_left.days > 1:
+                plot += '» ' + kodiutils.localize(30208, days=time_left.days) + "\n"  # [B]{days} days[/B] remaining
+            elif time_left.days == 1:
+                plot += '» ' + kodiutils.localize(30209) + "\n"  # [B]1 day[/B] remaining
+            elif time_left.seconds >= 3600 * 2:
+                plot += '» ' + kodiutils.localize(30210, hours=int(time_left.seconds / 3600)) + "\n"  # [B]{hours} hours[/B] remaining
+            elif time_left.seconds >= 3600:
+                plot += '» ' + kodiutils.localize(30211) + "\n"  # [B]1 hour[/B] remaining
+            else:
+                plot += '» ' + kodiutils.localize(30212) + "\n"  # [B]less then 1 hour[/B] remaining
+            plot += '\n'
+
+        # Add description
+        if program.description:
+            plot += program.description
+            plot += '\n\n'
+
+        return plot
 
     @classmethod
     def _format_channel_plot(cls, channel):
         """ Format a plot for a channel.
 
-        :param Channel channel:     The channel we want to have a plot for.
+        :param resources.lib.solocoo.util.Channel channel:     The channel we want to have a plot for.
 
         :return A formatted plot for this channel.
         :rtype str

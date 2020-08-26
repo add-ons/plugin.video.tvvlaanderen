@@ -24,7 +24,7 @@ _SESSION.headers['User-Agent'] = \
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, radio=False, available=None):
+    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, replay, radio=False, available=None):
         """
         :param Program epg_now:     The currently playing program on this channel.
         :param Program epg_next:    The next playing program on this channel.
@@ -36,6 +36,7 @@ class Channel:
         self.number = number
         self.epg_now = epg_now
         self.epg_next = epg_next
+        self.replay = replay
         self.radio = radio
 
         self.available = available
@@ -61,7 +62,7 @@ class StreamInfo:
 class Program:
     """ Program object """
 
-    def __init__(self, uid, title, description, cover, preview, start, end, channel_id, formats, genres, replay,
+    def __init__(self, uid, title, description, cover, preview, start, end, duration, channel_id, formats, genres, replay,
                  restart, age, series_id=None, season=None, episode=None, credit=None, available=None):
         self.uid = uid
         self.title = title
@@ -70,11 +71,13 @@ class Program:
         self.preview = preview
         self.start = start
         self.end = end
+        self.duration = duration
+
         self.age = age
         self.channel_id = channel_id
 
         self.formats = formats
-        self.generes = genres
+        self.genres = genres
 
         self.replay = replay
         self.restart = restart
@@ -130,8 +133,8 @@ def check_deals_entitlement(deals, offers):
     :param List[object] deals:          A list of deals.
     :param List[str] offers:            A list of the offers that we have.
 
-    :returns: True if we have a matching deal.
-    :rtype: bool
+    :returns: Returns False if we have no deal, True if we have a non-expiring deal or else a datetime with the expiry date.
+    :rtype: bool|datetime
     """
 
     # The API supports multiple deals for an item. A deal contains a list of offers it applies on, it can
@@ -144,28 +147,38 @@ def check_deals_entitlement(deals, offers):
     # deals = [{'offers': ['0', '1', '2', '11'], 'start': '2020-07-30T09:15:00Z', 'end': '2020-07-30T10:25:00Z'},
     #          {'offers': ['0', '1', '2', '11'], 'start': '2020-07-30T10:30:00Z', 'end': '2020-08-06T09:15:00Z'}]
 
-    # If we have no offers, allow everything
+    # If we have no offers, this isn't allowed
     if not offers:
         return False
 
     our_offers = set(offers)
     now = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
 
+    # Check all deals, keep the best
+    best_deal = None
     for deal in deals:
         # Check if deal is active
         start = deal.get('start', None)
         end = deal.get('end', None)
         if start and end and not start <= now <= end:
-            # _LOGGER.debug('This deal is not valid at this time')
             continue
 
         # Check if we have a matching offer
         deal_offers = set(deal.get('offers', []))
         if not our_offers & deal_offers:
-            # _LOGGER.debug('Our offers (%s) don\'t match with this deal (%s)', our_offers, deal_offers)
             continue
 
-        return True
+        if end is None:
+            # We have a deal that doesn't expire
+            # It won't get any better
+            return True
+
+        if best_deal is None or end > best_deal:
+            # Keep the best deal
+            best_deal = end
+
+    if best_deal is not None:
+        return dateutil.parser.parse(best_deal).astimezone(dateutil.tz.gettz('CET'))
 
     return False
 
@@ -188,7 +201,8 @@ def parse_channel(channel, offers=None):
         epg_now=parse_program(channel.get('params', {}).get('now')),
         epg_next=parse_program(channel.get('params', {}).get('next')),
         radio=channel.get('params', {}).get('radio', False),
-        available=check_deals_entitlement(channel.get('deals'), offers) if offers else True,
+        replay=channel.get('params', {}).get('replayExpiry', False) is not False,
+        available=check_deals_entitlement(channel.get('deals'), offers),
     )
 
 
@@ -216,6 +230,7 @@ def parse_program(program, offers=None):
         preview=find_image(program.get('images'), 'la'),  # landscape
         start=start,
         end=end,
+        duration=(end - start).total_seconds(),
         channel_id=program.get('params', {}).get('channelId'),
         formats=[epg_format.get('title') for epg_format in program.get('params', {}).get('formats')],
         genres=[epg_genre.get('title') for epg_genre in program.get('params', {}).get('genres')],
@@ -229,7 +244,7 @@ def parse_program(program, offers=None):
             Credit(credit.get('role'), credit.get('person'), credit.get('character'))
             for credit in program.get('params', {}).get('credits', [])
         ],
-        available=check_deals_entitlement(program.get('deals'), offers) if offers else True,
+        available=check_deals_entitlement(program.get('deals'), offers),
     )
 
 

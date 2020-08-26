@@ -31,25 +31,14 @@ class Channels:
 
     def show_channels(self):
         """ Shows TV channels. """
-        channels = self._channel_api.get_channels(False)
+        channels = self._channel_api.get_channels(True)
 
         listing = []
         for item in channels:
-            listing.append(TitleItem(
-                title=item.title,
-                path=kodiutils.url_for('show_channel', channel_id=item.uid),
-                art_dict={
-                    'cover': item.icon,
-                    'icon': item.icon,
-                    'thumb': item.icon,
-                },
-                info_dict={
-                    'title': item.title,
-                    'plot': None,
-                    'playcount': 0,
-                    'mediatype': 'video',
-                },
-            ))
+            title_item = Menu.generate_titleitem_channel(item)
+            title_item.path = kodiutils.url_for('show_channel', channel_id=item.uid)
+            title_item.is_playable = False
+            listing.append(title_item)
 
         kodiutils.show_listing(listing, 30007)
 
@@ -63,13 +52,13 @@ class Channels:
         listing = []
 
         # Play live
-        live_titleitem = Menu.generate_titleitem(channel)
+        live_titleitem = Menu.generate_titleitem_channel(channel)
         live_titleitem.info_dict['title'] = kodiutils.localize(30051, channel=channel.title)  # Watch live [B]{channel}[/B]
         listing.append(live_titleitem)
 
         # Restart currently airing program
         if channel.epg_now and channel.epg_now.restart:
-            restart_titleitem = Menu.generate_titleitem(channel.epg_now)
+            restart_titleitem = Menu.generate_titleitem_program(channel.epg_now)
             restart_titleitem.info_dict['title'] = kodiutils.localize(30052, program=channel.epg_now.title)  # Restart [B]{program}[/B]
             restart_titleitem.art_dict['thumb'] = 'DefaultInProgressShows.png'
             listing.append(restart_titleitem)
@@ -87,6 +76,20 @@ class Channels:
                 ),
             )
         )
+
+        if channel.replay:
+            listing.append(
+                TitleItem(
+                    title=kodiutils.localize(30055, channel=channel.title),  # Catalog for {channel}
+                    path=kodiutils.url_for('show_channel_replay', channel_id=channel_id),
+                    art_dict=dict(
+                        icon='DefaultMovieTitle.png',
+                    ),
+                    info_dict=dict(
+                        plot=kodiutils.localize(30056, channel=channel.title),  # Browse the Catalog for {channel}
+                    ),
+                )
+            )
 
         kodiutils.show_listing(listing, 30007)
 
@@ -125,9 +128,41 @@ class Channels:
         """
         programs = self._epg_api.get_guide([channel_id], date)
 
-        listing = [Menu.generate_titleitem(item) for item in programs.get(channel_id)]
+        listing = [Menu.generate_titleitem_program(item, timeline=True) for item in programs.get(channel_id)]
 
         kodiutils.show_listing(listing, 30013, content='files')
+
+    def show_channel_replay(self, channel_id):
+        """ Shows the replay programs of the specified channel.
+
+        :param str channel_id:          The channel for which we want to show the replay programs.
+        """
+        programs = self._channel_api.get_replay(channel_id)
+
+        listing = []
+        for item in programs:
+            # Hide these items
+            if item.title == 'Geen uitzending':
+                continue
+
+            if item.series_id:
+                listing.append(Menu.generate_titleitem_series(item))
+            else:
+                listing.append(Menu.generate_titleitem_program(item))
+
+        kodiutils.show_listing(listing, 30013, content='tvshows', sort=['label'])
+
+    def show_channel_replay_series(self, series_id):
+        """ Shows the related programs of the specified channel.
+
+        :param str series_id:           The series we want to show.
+        """
+
+        programs = self._channel_api.get_series(series_id)
+
+        listing = [Menu.generate_titleitem_program(item) for item in programs]
+
+        kodiutils.show_listing(listing, 30013, content='episodes')
 
     @staticmethod
     def _get_dates(date_format):
