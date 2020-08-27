@@ -222,6 +222,9 @@ def parse_program(program, offers=None):
     start = dateutil.parser.parse(program.get('params', {}).get('start')).astimezone(dateutil.tz.gettz('CET'))
     end = dateutil.parser.parse(program.get('params', {}).get('end')).astimezone(dateutil.tz.gettz('CET'))
 
+    season = program.get('params', {}).get('seriesSeason')
+    episode = program.get('params', {}).get('seriesEpisode')
+
     return Program(
         uid=program.get('id'),
         title=program.get('title'),
@@ -238,8 +241,8 @@ def parse_program(program, offers=None):
         restart=program.get('params', {}).get('restart', False),
         age=program.get('params', {}).get('age'),
         series_id=program.get('params', {}).get('seriesId'),
-        season=program.get('params', {}).get('seriesSeason'),
-        episode=program.get('params', {}).get('seriesEpisode'),
+        season=int(season) if season is not None else None,
+        episode=int(episode) if episode is not None else None,
         credit=[
             Credit(credit.get('role'), credit.get('person'), credit.get('character'))
             for credit in program.get('params', {}).get('credits', [])

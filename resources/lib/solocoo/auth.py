@@ -13,7 +13,7 @@ from hashlib import md5
 from requests import HTTPError
 
 from resources.lib.solocoo import TENANTS, SOLOCOO_API, util
-from resources.lib.solocoo.exceptions import InvalidLoginException
+from resources.lib.solocoo.exceptions import InvalidLoginException, InvalidTokenException
 
 try:  # Python 3
     import jwt
@@ -322,7 +322,11 @@ class AuthApi:
 
         :rtype: dict
         """
-        reply = util.http_get(SOLOCOO_API + '/entitlements', token_bearer=self._account.jwt_token)
+        try:
+            reply = util.http_get(SOLOCOO_API + '/entitlements', token_bearer=self._account.jwt_token)
+        except InvalidTokenException:
+            self.login(True)
+            reply = util.http_get(SOLOCOO_API + '/entitlements', token_bearer=self._account.jwt_token)
 
         entitlements = json.loads(reply.text)
 

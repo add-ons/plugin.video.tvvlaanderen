@@ -6,6 +6,8 @@ from __future__ import absolute_import, division, unicode_literals
 import logging
 from datetime import datetime, timedelta
 
+import dateutil.tz
+
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
 from resources.lib.modules.menu import Menu
@@ -31,7 +33,22 @@ class Channels:
 
     def show_channels(self):
         """ Shows TV channels. """
-        channels = self._channel_api.get_channels(True)
+        channels = self._channel_api.get_channels()
+
+        # Load EPG details for the next 6 hours
+        date_from = datetime.now(dateutil.tz.UTC).replace(minute=0, second=0, microsecond=0)
+        date_to = (date_from + timedelta(hours=6))
+        epg = self._epg_api.get_guide([channel.uid for channel in channels], date_from, date_to)
+        for channel in channels:
+            try:
+                channel.epg_now = epg.get(channel.uid, {})[0]
+            except (IndexError, KeyError):
+                pass
+
+            try:
+                channel.epg_next = epg.get(channel.uid, {})[1]
+            except (IndexError, KeyError):
+                pass
 
         listing = []
         for item in channels:
@@ -142,7 +159,7 @@ class Channels:
         listing = []
         for item in programs:
             # Hide these items
-            if item.title == 'Geen uitzending':
+            if item.title == EpgApi.EPG_NO_BROADCAST:
                 continue
 
             if item.series_id:

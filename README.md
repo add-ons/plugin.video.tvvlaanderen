@@ -1,6 +1,3 @@
-> Warning: This addon is still under heavy development. It will give errors and crash your Kodi installation.
-> It's currently intended for developers or early-alpha-testers only.
-
 [![GitHub release](https://img.shields.io/github/release/add-ons/plugin.video.tvvlaanderen.svg?include_prereleases)](https://github.com/add-ons/plugin.video.tvvlaanderen/releases)
 [![Build Status](https://img.shields.io/github/workflow/status/add-ons/plugin.video.tvvlaanderen/CI/master)](https://github.com/add-ons/plugin.video.tvvlaanderen/actions?query=branch%3Amaster)
 [![Codecov status](https://img.shields.io/codecov/c/github/add-ons/plugin.video.tvvlaanderen/master)](https://codecov.io/gh/add-ons/plugin.video.tvvlaanderen/branch/master)
@@ -23,9 +20,10 @@ Je kan de [laatste release](https://github.com/add-ons/plugin.video.tvvlaanderen
 
 De volgende features worden ondersteund:
 * Live TV
-* Restart TV
-* Replay TV
-* Zoeken
+* Restart TV, bekijk het huidige programma vanaf het begin (niet voor alle zenders)
+* Replay TV, bekijk een programma tot 7 dagen terug (niet voor alle zenders)
+* Doorzoeken van alle programma's
+* Integratie met [IPTV Manager](https://github.com/add-ons/service.iptv.manager)
 
 ## Screenshots
 

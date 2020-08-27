@@ -9,7 +9,7 @@ from resources.lib import kodiutils
 from resources.lib.modules.menu import Menu
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
-from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException
+from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException, InvalidTokenException
 from resources.lib.solocoo.util import Program, Channel
 
 _LOGGER = logging.getLogger(__name__)
@@ -20,11 +20,11 @@ class Player:
 
     def __init__(self):
         """ Initialise object """
-        auth = AuthApi(username=kodiutils.get_setting('username'),
-                       password=kodiutils.get_setting('password'),
-                       tenant=kodiutils.get_setting('tenant'),
-                       token_path=kodiutils.get_tokens_path())
-        self._channel_api = ChannelApi(auth)
+        self._auth = AuthApi(username=kodiutils.get_setting('username'),
+                             password=kodiutils.get_setting('password'),
+                             tenant=kodiutils.get_setting('tenant'),
+                             token_path=kodiutils.get_tokens_path())
+        self._channel_api = ChannelApi(self._auth)
 
     def play_asset(self, asset_id):
         """ Play an asset (can be a program of a live channel).
@@ -42,9 +42,14 @@ class Player:
         # Get stream info
         try:
             stream_info = self._channel_api.get_stream(asset_id)
+        except InvalidTokenException:
+            # Retry with fresh tokens
+            self._auth.login(True)
+            stream_info = self._channel_api.get_stream(asset_id)
         except (NotAvailableInOfferException, UnavailableException) as exc:
             _LOGGER.error(exc)
-            kodiutils.ok_dialog(message=kodiutils.localize(30712))
+            kodiutils.ok_dialog(message=kodiutils.localize(30712))  # The video is unavailable and can't be played right now.
+            kodiutils.end_of_directory()
             return
 
         license_key = self._create_license_key(stream_info.drm_license_url, key_headers={'Content-Type': 'application/octet-stream'})
