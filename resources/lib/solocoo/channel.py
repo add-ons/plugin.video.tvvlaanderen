@@ -32,7 +32,7 @@ class ChannelApi:
         self._auth = auth
         self._tokens = self._auth.login()
 
-    def get_channels(self, include_epg=True):
+    def get_channels(self):
         """ Get all channels.
 
         :returns: A list of all channels.
@@ -52,25 +52,6 @@ class ChannelApi:
 
         # Filter only available channels
         channels = [channel for channel in channels if channel.available is not False]
-
-        if include_epg and channels:
-            # Load EPG details for all channels 40 at a time
-            epg = {}
-            chunk_size = 40
-            for i in range(0, len(channels), chunk_size):
-                _LOGGER.debug('Fetching EPG at index %d', i)
-                epg.update(self.get_current_epg([channel.uid for channel in channels[i:i + chunk_size]]))
-
-            for channel in channels:
-                try:
-                    channel.epg_now = epg.get(channel.uid, {})[0]
-                except (IndexError, KeyError):
-                    pass
-
-                try:
-                    channel.epg_next = epg.get(channel.uid, {})[1]
-                except (IndexError, KeyError):
-                    pass
 
         return channels
 

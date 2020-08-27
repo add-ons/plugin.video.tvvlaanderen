@@ -75,7 +75,9 @@ class TestChannel(unittest.TestCase):
         self.assertIsInstance(programs, list)
         self.assertIsInstance(programs[0], Program)
 
-        programs = api.get_series(programs[0].series_id)
+        # Find a serie
+        series_id = next((program.series_id for program in programs if program.series_id is not None))
+        programs = api.get_series(series_id)
         print(programs)
         self.assertIsInstance(programs, list)
         self.assertIsInstance(programs[0], Program)

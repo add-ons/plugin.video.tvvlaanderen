@@ -7,8 +7,8 @@ import json
 import logging
 from datetime import datetime, timedelta
 
-import dateutil.tz
 import dateutil.parser
+import dateutil.tz
 
 from resources.lib.solocoo import SOLOCOO_API, util
 from resources.lib.solocoo.util import parse_program
@@ -19,6 +19,11 @@ _LOGGER = logging.getLogger(__name__)
 class EpgApi:
     """ Solocoo EPG API """
 
+    # Request this many channels at the same time
+    EPG_CHUNK_SIZE = 40
+
+    EPG_NO_BROADCAST = 'Geen uitzending'
+
     def __init__(self, auth):
         """ Initialisation of the class.
 
@@ -27,12 +32,13 @@ class EpgApi:
         self._auth = auth
         self._tokens = self._auth.login()  # Login and make sure we have a token
 
-    def get_guide(self, channels, date):
+    def get_guide(self, channels, date_from=None, date_to=None):
         """ Get the guide for the specified channels and date.
 
         :param list|str channels:       A single channel or a list of channels to fetch.
-        :param str date:                The date of the guide we want to fetch.
-        :rtype: dict[str, list[Program]]
+        :param str|datetime date_from:  The date of the guide we want to fetch.
+        :param str|datetime date_to:    The date of the guide we want to fetch.
+        :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
         """
         # Allow to specify one channel, and we map it to a list
         if not isinstance(channels, list):
@@ -42,24 +48,34 @@ class EpgApi:
         offers = entitlements.get('offers', [])
 
         # Generate dates in UTC format
-        # TODO: this could be cleaner. We need times in Zulu timezone.
-        date = self._parse_date(date)
-        date_from = date.isoformat().replace('+00:00', '')
-        date_to = (date + timedelta(days=1)).isoformat().replace('+00:00', '')
+        if date_from is not None:
+            date_from = self._parse_date(date_from)
+        else:
+            date_from = self._parse_date('today')
 
-        reply = util.http_get(SOLOCOO_API + '/schedule',
-                              params={
-                                  'channels': ','.join(channels),
-                                  'from': date_from,
-                                  'until': date_to,
-                                  'maxProgramsPerChannel': 2147483647,  # The android app also does this
-                              },
-                              token_bearer=self._tokens.jwt_token)
-        data = json.loads(reply.text)
+        if date_to is not None:
+            date_to = self._parse_date(date_to)
+        else:
+            date_to = (date_from + timedelta(days=1))
 
-        # Parse to a dict (channel: list[Program])
-        programs = {channel: [parse_program(program, offers) for program in programs]
-                    for channel, programs in data.get('epg', []).items()}
+        programs = {}
+
+        for i in range(0, len(channels), self.EPG_CHUNK_SIZE):
+            _LOGGER.debug('Fetching EPG at index %d', i)
+
+            reply = util.http_get(SOLOCOO_API + '/schedule',
+                                  params={
+                                      'channels': ','.join(channels[i:i + self.EPG_CHUNK_SIZE]),
+                                      'from': date_from.isoformat().replace('+00:00', ''),
+                                      'until': date_to.isoformat().replace('+00:00', ''),
+                                      'maxProgramsPerChannel': 2147483647,  # The android app also does this
+                                  },
+                                  token_bearer=self._tokens.jwt_token)
+            data = json.loads(reply.text)
+
+            # Parse to a dict (channel: list[Program])
+            programs.update({channel: [parse_program(program, offers) for program in programs]
+                             for channel, programs in data.get('epg', []).items()})
 
         return programs
 
@@ -67,7 +83,7 @@ class EpgApi:
         """ Get program details by calling the API.
 
         :param str uid:                 The ID of the program.
-        :rtype: Program
+        :rtype: resources.lib.solocoo.util.Program
         """
         reply = util.http_get(SOLOCOO_API + '/assets/{uid}'.format(uid=uid),
                               token_bearer=self._tokens.jwt_token)
@@ -80,11 +96,13 @@ class EpgApi:
     def _parse_date(date):
         """ Parse the passed date to a real date.
 
-        :param str date:                The date to parse.
+        :param str|datetime date:       The date to parse.
         :rtype: datetime
          """
-        if date is None or date == 'today':
-            # Fetch today when no date is specified
+        if isinstance(date, datetime):
+            return date
+
+        if date == 'today':
             date_obj = datetime.today()
         elif date == 'yesterday':
             date_obj = (datetime.today() + timedelta(days=-1))
