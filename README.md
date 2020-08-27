@@ -25,6 +25,17 @@ De volgende features worden ondersteund:
 * Live TV
 * Restart TV
 * Replay TV
+* Zoeken
+
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="resources/screenshot01.jpg" width=270></td>
+    <td><img src="resources/screenshot02.jpg" width=270></td>
+    <td><img src="resources/screenshot03.jpg" width=270></td>
+  </tr>
+ </table>
 
 ## Disclaimer
 
