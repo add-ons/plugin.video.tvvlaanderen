@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
-import hashlib
 import json
 import logging
 import os
@@ -170,7 +169,7 @@ class AuthApi:
     def _check_credentials_change(self):
         """ Check if credentials have changed """
         old_hash = self._account.hash
-        new_hash = hashlib.md5((self._username + ':' + self._password).encode('utf-8')).hexdigest()
+        new_hash = md5((self._username + ':' + self._password).encode('utf-8')).hexdigest()
         if new_hash != old_hash:
             _LOGGER.debug('Credentials have changed, clearing tokens.')
             self._account.hash = new_hash
