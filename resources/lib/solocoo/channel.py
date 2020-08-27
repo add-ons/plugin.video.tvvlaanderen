@@ -53,10 +53,14 @@ class ChannelApi:
         # Filter only available channels
         channels = [channel for channel in channels if channel.available is not False]
 
-        # Load EPG details for all channels at once
-        # TODO request maximum 10 at a time
         if include_epg and channels:
-            epg = self.get_current_epg([channel.uid for channel in channels])
+            # Load EPG details for all channels 40 at a time
+            epg = {}
+            chunk_size = 40
+            for i in range(0, len(channels), chunk_size):
+                _LOGGER.debug('Fetching EPG at index %d', i)
+                epg.update(self.get_current_epg([channel.uid for channel in channels[i:i + chunk_size]]))
+
             for channel in channels:
                 try:
                     channel.epg_now = epg.get(channel.uid, {})[0]
