@@ -55,17 +55,17 @@ class ChannelApi:
 
         # Load EPG details for all channels at once
         # TODO request maximum 10 at a time
-        if include_epg:
+        if include_epg and channels:
             epg = self.get_current_epg([channel.uid for channel in channels])
             for channel in channels:
                 try:
                     channel.epg_now = epg.get(channel.uid, {})[0]
-                except IndexError:
+                except (IndexError, KeyError):
                     pass
 
                 try:
                     channel.epg_next = epg.get(channel.uid, {})[1]
-                except IndexError:
+                except (IndexError, KeyError):
                     pass
 
         return channels

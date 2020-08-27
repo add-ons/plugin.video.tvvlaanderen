@@ -3,11 +3,13 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
+import hashlib
 import json
 import logging
 import os
 import time
 import uuid
+from hashlib import md5
 
 from requests import HTTPError
 
@@ -84,8 +86,6 @@ class AuthApi:
         self._username = username
         self._password = password
 
-        # TODO: store a hash based on the username and password
-
         self._tenant = TENANTS.get(tenant)
         if self._tenant is None:
             raise Exception('Invalid tenant: %s' % tenant)
@@ -112,11 +112,12 @@ class AuthApi:
         :return:
         :rtype: AccountStorage
         """
+        # Check if credentials have changed
+        self._check_credentials_change()
+
         # Use cached token if it is still valid
         if not force and self._account.is_valid_token():
             return self._account
-
-        # TODO: when changing the username and password, we need to invalidate the tokens
 
         if not self._account.challenge_id or not self._account.challenge_secret:
             # We don't have an challenge_id or challenge_secret, so we need to request one
@@ -165,6 +166,15 @@ class AuthApi:
         self._save_cache()
 
         return self._account
+
+    def _check_credentials_change(self):
+        """ Check if credentials have changed """
+        old_hash = self._account.hash
+        new_hash = hashlib.md5((self._username + ':' + self._password).encode('utf-8')).hexdigest()
+        if new_hash != old_hash:
+            _LOGGER.debug('Credentials have changed, clearing tokens.')
+            self._account.hash = new_hash
+            self.logout()
 
     def _do_challenge(self, device_name, device_serial, username, password):
         """ Do an authentication challenge.
@@ -303,6 +313,8 @@ class AuthApi:
         """ Clear the session tokens. """
         self._account.aspx_token = None
         self._account.jwt_token = None
+        self._account.challenge_id = None
+        self._account.challenge_secret = None
 
         self._save_cache()
 
