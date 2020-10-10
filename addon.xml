@@ -20,7 +20,7 @@
         <description lang="en_GB">This add-on gives access to the live tv channels and the video-on-demand content available in your TV Vlaanderen subscription.</description>
         <disclaimer lang="en_GB">This add-on is not officially commissioned/supported by TV Vlaanderen and is provided 'as is' without any warranty of any kind. TV Vlaanderen is a brand of Canal+ Luxembourg S. à r.l.</disclaimer>
         <platform>all</platform>
-        <license>GPL-3.0</license>
+        <license>GPL-3.0-only</license>
         <news>v0.0.1</news>
         <source>https://github.com/add-ons/plugin.video.tvvlaanderen</source>
         <assets>
