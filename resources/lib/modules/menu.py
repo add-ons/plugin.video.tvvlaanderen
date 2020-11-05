@@ -107,9 +107,9 @@ class Menu:
             path=kodiutils.url_for('play_asset', asset_id=item.uid),
             art_dict={
                 'cover': item.cover,
-                'icon': item.preview,
-                'thumb': item.preview,
-                'fanart': item.preview,
+                'icon': item.preview or item.cover,
+                'thumb': item.preview or item.cover,
+                'fanart': item.preview or item.cover,
             },
             info_dict={
                 'tvshowtitle': item.title,

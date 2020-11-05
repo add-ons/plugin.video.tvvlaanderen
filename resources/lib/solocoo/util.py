@@ -11,6 +11,7 @@ import dateutil.tz
 import requests
 from requests import HTTPError
 
+from resources.lib.solocoo import BIT_EPG_FLAG_REPLAY, BIT_EPG_FLAG_RESTART
 from resources.lib.solocoo.exceptions import InvalidTokenException
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,12 +25,13 @@ _SESSION.headers['User-Agent'] = \
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None):
+    def __init__(self, uid, station_id, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None):
         """
         :param Program epg_now:     The currently playing program on this channel.
         :param Program epg_next:    The next playing program on this channel.
         """
         self.uid = uid
+        self.station_id = station_id
         self.title = title
         self.icon = icon
         self.preview = preview
@@ -43,6 +45,10 @@ class Channel:
 
     def __repr__(self):
         return "%r" % self.__dict__
+
+    def get_combi_id(self):
+        """ Return a combination of the uid and the station_id. """
+        return "%s:%s" % (self.uid, self.station_id)
 
 
 class StreamInfo:
@@ -183,7 +189,7 @@ def check_deals_entitlement(deals, offers):
     return False
 
 
-def parse_channel(channel, offers=None):
+def parse_channel(channel, offers=None, capi_data=None):
     """ Parse the API result of a channel into a Channel object.
 
     :param dict channel:            The channel info from the API.
@@ -192,11 +198,18 @@ def parse_channel(channel, offers=None):
     :returns: A channel that is parsed.
     :rtype: Channel
     """
+    # Lookup CAPI station id
+    station_id = None
+    if capi_data:
+        lcn = channel.get('params', {}).get('lcn')
+        station_id = next(row.get('stationid') for row in capi_data if row.get('number') == lcn)
+
     return Channel(
         uid=channel.get('id'),
+        station_id=station_id,
         title=channel.get('title'),
-        icon=find_image(channel.get('images'), 'la'),
-        preview=find_image(channel.get('images'), 'lv'),
+        icon=find_image(channel.get('images'), 'la'),  # landscape
+        preview=find_image(channel.get('images'), 'lv'),  # live
         number=channel.get('params', {}).get('lcn'),
         epg_now=parse_program(channel.get('params', {}).get('now')),
         epg_next=parse_program(channel.get('params', {}).get('next')),
@@ -207,7 +220,7 @@ def parse_channel(channel, offers=None):
 
 
 def parse_program(program, offers=None):
-    """ Parse a program dict.
+    """ Parse a program dict from the TV API.
 
     :param dict program:            The program object to parse.
     :param List[str] offers:        A list of offers that we have.
@@ -229,7 +242,7 @@ def parse_program(program, offers=None):
         uid=program.get('id'),
         title=program.get('title'),
         description=program.get('desc'),
-        cover=find_image(program.get('images'), 'po'),  # portrait
+        cover=find_image(program.get('images'), 'po'),  # poster
         preview=find_image(program.get('images'), 'la'),  # landscape
         start=start,
         end=end,
@@ -248,6 +261,51 @@ def parse_program(program, offers=None):
             for credit in program.get('params', {}).get('credits', [])
         ],
         available=check_deals_entitlement(program.get('deals'), offers),
+    )
+
+
+def parse_program_capi(program):
+    """ Parse an program dict from the CAPI.
+
+    :param dict program:            The program object to parse.
+
+    :returns: A program that is parsed.
+    :rtype: EpgProgram
+    """
+    if not program:
+        return None
+
+    # Parse dates
+    start = datetime.fromtimestamp(program.get('start') / 1000, dateutil.tz.gettz('CET'))
+    end = datetime.fromtimestamp(program.get('end') / 1000, dateutil.tz.gettz('CET'))
+
+    # TODO: figure out how to know if a program is available or not, we always seem to get flag 48.
+
+    return Program(
+        uid=program.get('locId'),
+        title=program.get('title'),
+        description=program.get('description'),
+        # TODO: use url for cover from tenant or a const somewhere
+        cover='https://m7be2.solocoo.tv/m7be2iphone/' + program.get('cover').replace('mpimages/', 'mpimages/447x251/'),
+        preview=None,
+        start=start,
+        end=end,
+        duration=(end - start).total_seconds(),
+        channel_id=None,
+        formats=[program.get('formats')],  # We only have one format
+        genres=program.get('genres'),
+        replay=program.get('flags') & BIT_EPG_FLAG_REPLAY,
+        restart=program.get('flags') & BIT_EPG_FLAG_RESTART,
+        age=program.get('age'),
+        series_id=program.get('seriesId'),
+        season=program.get('seasonNo'),
+        episode=program.get('episodeNo'),
+        # TODO: parse this
+        # credit=[
+        #     Credit(credit.get('role'), credit.get('person'), credit.get('character'))
+        #     for credit in program.get('params', {}).get('credits', [])
+        # ],
+        available=program.get('flags') & BIT_EPG_FLAG_REPLAY,
     )
 
 

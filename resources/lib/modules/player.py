@@ -32,20 +32,27 @@ class Player:
         :param string asset_id:       The ID of the asset to play.
         """
         # Get asset info
-        asset = self._channel_api.get_asset(asset_id)
+        if len(asset_id) == 32:
+            # a locId is 32 chars
+            asset = self._channel_api.get_asset_by_locid(asset_id)
+        else:
+            # an asset_id is 40 chars
+            asset = self._channel_api.get_asset(asset_id)
 
         if isinstance(asset, Program):
             item = Menu.generate_titleitem_program(asset)
         elif isinstance(asset, Channel):
             item = Menu.generate_titleitem_channel(asset)
+        else:
+            raise Exception('Unknown asset type: %s' % asset)
 
         # Get stream info
         try:
-            stream_info = self._channel_api.get_stream(asset_id)
+            stream_info = self._channel_api.get_stream(asset.uid)
         except InvalidTokenException:
             # Retry with fresh tokens
             self._auth.login(True)
-            stream_info = self._channel_api.get_stream(asset_id)
+            stream_info = self._channel_api.get_stream(asset.uid)
         except (NotAvailableInOfferException, UnavailableException) as exc:
             _LOGGER.error(exc)
             kodiutils.ok_dialog(message=kodiutils.localize(30712))  # The video is unavailable and can't be played right now.

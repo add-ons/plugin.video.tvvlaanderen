@@ -11,7 +11,8 @@ from datetime import datetime, timedelta
 import dateutil.tz
 from requests import HTTPError
 
-from resources.lib.solocoo import SOLOCOO_API, util
+from resources.lib.solocoo import SOLOCOO_API, util, CAPI_API, BIT_CHANNEL_DETAIL_ID, BIT_CHANNEL_DETAIL_NUMBER, BIT_CHANNEL_DETAIL_STATIONID, \
+    BIT_CHANNEL_DETAIL_FLAGS, BIT_CHANNEL_DETAIL_TITLE, BIT_CHANNEL_DETAIL_GENRES
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException
 from resources.lib.solocoo.util import parse_channel, StreamInfo, parse_program
 
@@ -33,7 +34,7 @@ class ChannelApi:
         self._tokens = self._auth.login()
 
     def get_channels(self):
-        """ Get all channels.
+        """ Get all channels from the TV API.
 
         :returns: A list of all channels.
         :rtype: list[resources.lib.solocoo.util.Channel]
@@ -41,12 +42,34 @@ class ChannelApi:
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])
 
+        # TODO: we might want to cache these calls
+
+        # Fetch channel listing from TV API
         reply = util.http_get(SOLOCOO_API + '/bouquet', token_bearer=self._tokens.jwt_token)
         data = json.loads(reply.text)
 
+        # Fetch channel listing from CAPI
+        # We need this for the stationid that we can use to fetch a better EPG
+        capi_reply = util.http_get(CAPI_API,
+                                   params={
+                                       'z': 'epg',
+                                       'f_format': 'clx',  # channel listing
+                                       'd': 3,
+                                       'v': 3,
+                                       'u': self._tokens.device_serial,
+                                       'a': 'tvv',  # TODO: use tenant
+                                       'cs': (BIT_CHANNEL_DETAIL_ID + BIT_CHANNEL_DETAIL_NUMBER + BIT_CHANNEL_DETAIL_STATIONID +
+                                              BIT_CHANNEL_DETAIL_TITLE + BIT_CHANNEL_DETAIL_GENRES + BIT_CHANNEL_DETAIL_FLAGS),  # 111
+                                       'lng': 'nl_BE',
+                                       'streams': 15,
+                                   },
+                                   token_cookie=self._tokens.aspx_token)
+        capi_data = json.loads(capi_reply.text)[0][1]
+        # TODO: make a lookup table to improve performance
+
         # Parse list to Channel objects
         channels = [
-            parse_channel(channel.get('assetInfo', {}), offers)
+            parse_channel(channel.get('assetInfo', {}), offers, capi_data)
             for channel in data.get('channels', []) if channel.get('alias', False) is False
         ]
 
@@ -106,6 +129,18 @@ class ChannelApi:
             return parse_channel(data)
 
         raise Exception('Unknown asset type: %s' % data.get('type'))
+
+    def get_asset_by_locid(self, loc_id):
+        """ Convert a locId to a assetId. """
+        reply = util.http_get(CAPI_API,
+                              params={
+                                  'z': 'converttotvapi',
+                                  'locId': loc_id,
+                                  'type': 'EPGProgram',
+                              },
+                              token_cookie=self._tokens.aspx_token)
+        data = json.loads(reply.text)
+        return self.get_asset(data.get('assetId'))
 
     def get_replay(self, channel_id):
         """ Get a list of programs that are replayable from the given channel.

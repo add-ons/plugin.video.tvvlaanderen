@@ -37,6 +37,21 @@ class TestEpg(unittest.TestCase):
         self.assertIsInstance(programs, list)
         self.assertIsInstance(programs[0], Program)
 
+    def test_get_guide_capi(self):
+        api = EpgApi(self._auth)
+
+        channel_id = [
+            '1790975744',  # één
+            '1790975808',  # canvas
+        ]
+
+        guide = api.get_guide_with_capi(channel_id, 'today')
+        self.assertIsInstance(guide, dict)
+
+        programs = guide.get(channel_id[0])
+        self.assertIsInstance(programs, list)
+        self.assertIsInstance(programs[0], Program)
+
     def test_get_program(self):
         api = EpgApi(self._auth)
 
