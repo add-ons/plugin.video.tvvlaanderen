@@ -24,7 +24,7 @@ _SESSION.headers['User-Agent'] = \
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, title, icon, preview, number, epg_now, epg_next, replay, radio=False, available=None):
+    def __init__(self, uid, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None):
         """
         :param Program epg_now:     The currently playing program on this channel.
         :param Program epg_next:    The next playing program on this channel.

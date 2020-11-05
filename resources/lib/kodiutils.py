@@ -10,6 +10,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+import xbmcvfs
 
 ADDON = xbmcaddon.Addon()
 
@@ -111,7 +112,7 @@ def addon_path():
 
 def addon_profile():
     """Cache and return add-on profile"""
-    return to_unicode(xbmc.translatePath(ADDON.getAddonInfo('profile')))
+    return to_unicode(xbmcvfs.translatePath(ADDON.getAddonInfo('profile')))
 
 
 def url_for(name, *args, **kwargs):
