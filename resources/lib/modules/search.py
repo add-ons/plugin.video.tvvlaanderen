@@ -7,9 +7,9 @@ import logging
 
 from resources.lib import kodiutils
 from resources.lib.modules.menu import Menu
+from resources.lib.solocoo import Program, Channel
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.search import SearchApi
-from resources.lib.solocoo.util import Program, Channel
 
 _LOGGER = logging.getLogger(__name__)
 

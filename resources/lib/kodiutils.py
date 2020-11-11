@@ -26,7 +26,7 @@ DEFAULT_SORT_METHODS = [
     'unsorted', 'title'
 ]
 
-_LOGGER = logging.getLogger('kodiutils')
+_LOGGER = logging.getLogger(__name__)
 
 
 class TitleItem:
@@ -109,9 +109,18 @@ def addon_path():
     return get_addon_info('path')
 
 
+def translate_path(path):
+    """Converts a Kodi special:// path to a normal path"""
+    try:  # Kodi 19 alpha 2 and higher
+        from xbmcvfs import translatePath
+    except ImportError:  # Kodi 19 alpha 1 and lower
+        return to_unicode(xbmc.translatePath(from_unicode(path)))
+    return translatePath(path)
+
+
 def addon_profile():
     """Cache and return add-on profile"""
-    return to_unicode(xbmc.translatePath(ADDON.getAddonInfo('profile')))
+    return translate_path(ADDON.getAddonInfo('profile'))
 
 
 def url_for(name, *args, **kwargs):

@@ -53,7 +53,7 @@ class Channels:
         listing = []
         for item in channels:
             title_item = Menu.generate_titleitem_channel(item)
-            title_item.path = kodiutils.url_for('show_channel', channel_id=item.uid)
+            title_item.path = kodiutils.url_for('show_channel', channel_id=item.get_combi_id())
             title_item.is_playable = False
             listing.append(title_item)
 
@@ -64,7 +64,7 @@ class Channels:
 
         :param str channel_id:          The channel we want to display.
         """
-        channel = self._channel_api.get_asset(channel_id)
+        channel = self._channel_api.get_asset(channel_id.split(':')[0])
 
         listing = []
 
@@ -143,9 +143,15 @@ class Channels:
         :param str channel_id:          The channel for which we want to show an EPG.
         :param str date:                The date to show.
         """
-        programs = self._epg_api.get_guide([channel_id], date)
+        # Lookup with CAPI
+        lookup_id = channel_id.split(':')[1]
+        programs = self._epg_api.get_guide_with_capi([lookup_id], date)
 
-        listing = [Menu.generate_titleitem_program(item, timeline=True) for item in programs.get(channel_id)]
+        # Lookup with TV API
+        # lookup_id = channel_id.split(':')[0]
+        # programs = self._epg_api.get_guide([lookup_id], date)
+
+        listing = [Menu.generate_titleitem_program(item, timeline=True) for item in programs.get(lookup_id)]
 
         kodiutils.show_listing(listing, 30013, content='files')
 
@@ -154,7 +160,7 @@ class Channels:
 
         :param str channel_id:          The channel for which we want to show the replay programs.
         """
-        programs = self._channel_api.get_replay(channel_id)
+        programs = self._channel_api.get_replay(channel_id.split(':')[0])
 
         listing = []
         for item in programs:

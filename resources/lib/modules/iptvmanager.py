@@ -7,6 +7,7 @@ import logging
 from collections import defaultdict
 
 from resources.lib import kodiutils
+from resources.lib.solocoo import Credit
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.epg import EpgApi
@@ -54,7 +55,7 @@ class IPTVManager:
             streams.append(dict(
                 name=channel.title,
                 stream=kodiutils.url_for('play_asset', asset_id=channel.uid),
-                id=channel.uid,
+                id=channel.station_id,
                 logo=channel.icon,
                 preset=channel.number,
             ))
@@ -72,11 +73,27 @@ class IPTVManager:
         # Load EPG data
         channels = channel_api.get_channels()
         for date in ['yesterday', 'today', 'tomorrow']:
-            for channel, programs in epg_api.get_guide([channel.uid for channel in channels], date).items():
+            for channel, programs in epg_api.get_guide_with_capi([channel.station_id for channel in channels], date).items():
                 for program in programs:
                     # Hide these items
                     if program.title == EpgApi.EPG_NO_BROADCAST:
                         continue
+
+                    # Construct mapping for credits
+                    program_credits = []
+                    for credit in program.credit:
+                        if credit.role == Credit.ROLE_ACTOR:
+                            program_credits.append({'type': 'actor', 'name': credit.person, 'role': credit.character})
+                        elif credit.role == Credit.ROLE_DIRECTOR:
+                            program_credits.append({'type': 'director', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_PRODUCER:
+                            program_credits.append({'type': 'producer', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_COMPOSER:
+                            program_credits.append({'type': 'composer', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_PRESENTER:
+                            program_credits.append({'type': 'presenter', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_GUEST:
+                            program_credits.append({'type': 'guest', 'name': credit.person})
 
                     epg[channel].append(dict(
                         start=program.start.isoformat(),
@@ -85,9 +102,10 @@ class IPTVManager:
                         description=program.description,
                         subtitle=None,
                         episode='S%dE%d' % (program.season, program.episode) if program.season and program.episode else None,
-                        genre=None,
+                        genre=program.genres,
                         image=program.cover,
                         date=None,
+                        credits=program_credits,
                         stream=kodiutils.url_for('play_asset', asset_id=program.uid) if program.replay else None))
 
         return dict(version=1, epg=epg)
