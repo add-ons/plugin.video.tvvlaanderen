@@ -79,6 +79,22 @@ class IPTVManager:
                     if program.title == EpgApi.EPG_NO_BROADCAST:
                         continue
 
+                    # Construct mapping for credits
+                    program_credits = []
+                    for credit in program.credit:
+                        if credit.role == Credit.ROLE_ACTOR:
+                            program_credits.append({'type': 'actor', 'name': credit.person, 'role': credit.character})
+                        elif credit.role == Credit.ROLE_DIRECTOR:
+                            program_credits.append({'type': 'director', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_PRODUCER:
+                            program_credits.append({'type': 'producer', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_COMPOSER:
+                            program_credits.append({'type': 'composer', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_PRESENTER:
+                            program_credits.append({'type': 'presenter', 'name': credit.person})
+                        elif credit.role == Credit.ROLE_GUEST:
+                            program_credits.append({'type': 'guest', 'name': credit.person})
+
                     epg[channel].append(dict(
                         start=program.start.isoformat(),
                         stop=program.end.isoformat(),
@@ -89,18 +105,7 @@ class IPTVManager:
                         genre=program.genres,
                         image=program.cover,
                         date=None,
-                        credits=[{'type': 'actor', 'name': credit.person, 'role': credit.character}
-                                 for credit in program.credit if credit.role == Credit.ROLE_ACTOR] +
-                                [{'type': 'director', 'name': credit.person}
-                                 for credit in program.credit if credit.role == Credit.ROLE_DIRECTOR] +
-                                [{'type': 'producer', 'name': credit.person}
-                                 for credit in program.credit if credit.role == Credit.ROLE_PRODUCER] +
-                                [{'type': 'composer', 'name': credit.person}
-                                 for credit in program.credit if credit.role == Credit.ROLE_COMPOSER] +
-                                [{'type': 'presenter', 'name': credit.person}
-                                 for credit in program.credit if credit.role == Credit.ROLE_PRESENTER] +
-                                [{'type': 'guest', 'name': credit.person}
-                                 for credit in program.credit if credit.role == Credit.ROLE_GUEST],
+                        credits=program_credits,
                         stream=kodiutils.url_for('play_asset', asset_id=program.uid) if program.replay else None))
 
         return dict(version=1, epg=epg)
