@@ -221,8 +221,12 @@ def play(stream, license_key=None, title=None, art_dict=None, info_dict=None, pr
     play_item.setMimeType('application/dash+xml')
     play_item.setContentLookup(False)
 
-    play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
-    play_item.setProperty('inputstream.adaptive.license_key', license_key)
+    if license_key is not None:
+        import inputstreamhelper
+        is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
+        if is_helper.check_inputstream():
+            play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
+            play_item.setProperty('inputstream.adaptive.license_key', license_key)
 
     xbmcplugin.setResolvedUrl(routing.handle, True, listitem=play_item)
 
