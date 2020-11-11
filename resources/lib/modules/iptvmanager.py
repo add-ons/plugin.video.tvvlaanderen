@@ -90,17 +90,17 @@ class IPTVManager:
                         image=program.cover,
                         date=None,
                         credits=[{'type': 'actor', 'name': credit.person, 'role': credit.character}
-                                 for credit in program.credit if credit.role == Credit.ROLE_ACTOR]
-                                + [{'type': 'director', 'name': credit.person}
-                                   for credit in program.credit if credit.role == Credit.ROLE_DIRECTOR]
-                                + [{'type': 'producer', 'name': credit.person}
-                                   for credit in program.credit if credit.role == Credit.ROLE_PRODUCER]
-                                + [{'type': 'composer', 'name': credit.person}
-                                   for credit in program.credit if credit.role == Credit.ROLE_COMPOSER]
-                                + [{'type': 'presenter', 'name': credit.person}
-                                   for credit in program.credit if credit.role == Credit.ROLE_PRESENTER]
-                                + [{'type': 'guest', 'name': credit.person}
-                                   for credit in program.credit if credit.role == Credit.ROLE_GUEST],
+                                 for credit in program.credit if credit.role == Credit.ROLE_ACTOR] +
+                                [{'type': 'director', 'name': credit.person}
+                                 for credit in program.credit if credit.role == Credit.ROLE_DIRECTOR] +
+                                [{'type': 'producer', 'name': credit.person}
+                                 for credit in program.credit if credit.role == Credit.ROLE_PRODUCER] +
+                                [{'type': 'composer', 'name': credit.person}
+                                 for credit in program.credit if credit.role == Credit.ROLE_COMPOSER] +
+                                [{'type': 'presenter', 'name': credit.person}
+                                 for credit in program.credit if credit.role == Credit.ROLE_PRESENTER] +
+                                [{'type': 'guest', 'name': credit.person}
+                                 for credit in program.credit if credit.role == Credit.ROLE_GUEST],
                         stream=kodiutils.url_for('play_asset', asset_id=program.uid) if program.replay else None))
 
         return dict(version=1, epg=epg)

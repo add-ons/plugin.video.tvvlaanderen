@@ -124,8 +124,8 @@ class Menu:
                 'date': item.start.strftime('%d.%m.%Y'),
                 'duration': item.duration,
                 'cast':
-                    [(credit.person, credit.character) for credit in item.credit if credit.role == Credit.ROLE_ACTOR]
-                    + [credit.person for credit in item.credit if credit.role in [Credit.ROLE_PRESENTER, Credit.ROLE_GUEST]],
+                    [(credit.person, credit.character) for credit in item.credit if credit.role == Credit.ROLE_ACTOR] +
+                    [credit.person for credit in item.credit if credit.role in [Credit.ROLE_PRESENTER, Credit.ROLE_GUEST]],
                 'director': [credit.person for credit in item.credit if credit.role in [Credit.ROLE_DIRECTOR, Credit.ROLE_PRODUCER]],
                 # 'credits': [credit.person for credit in item.credit if credit.role in [Credit.ROLE_COMPOSER]],
             },
