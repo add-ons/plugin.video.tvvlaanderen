@@ -34,7 +34,7 @@ class ChannelApi:
         self._tenant = self._auth.get_tenant()
 
     def get_channels(self):
-        """ Get all channels from the TV API.
+        """ Get all channels.
 
         :returns: A list of all channels.
         :rtype: list[resources.lib.solocoo.util.Channel]
