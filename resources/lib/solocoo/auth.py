@@ -61,7 +61,7 @@ class AccountStorage:
             # Verify our token to see if it's still valid.
             jwt.decode(self.jwt_token,
                        algorithms=['HS256'],
-                       options={'verify_signature': False, 'verify_aud': False})
+                       options={'verify_signature': False, 'verify_aud': False, 'verify_nbf': False})
         except Exception as exc:  # pylint: disable=broad-except
             _LOGGER.debug('JWT is NOT valid: %s', exc)
             return False
