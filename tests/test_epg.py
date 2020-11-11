@@ -9,9 +9,9 @@ import logging
 import unittest
 
 from resources.lib import kodiutils
+from resources.lib.solocoo import Program
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.epg import EpgApi
-from resources.lib.solocoo.util import Program
 
 _LOGGER = logging.getLogger(__name__)
 

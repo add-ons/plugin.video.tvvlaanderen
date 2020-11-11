@@ -9,10 +9,10 @@ import logging
 import unittest
 
 from resources.lib import kodiutils
+from resources.lib.solocoo import Channel, StreamInfo, Program
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException
-from resources.lib.solocoo.util import Channel, StreamInfo, Program
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ class TestChannel(unittest.TestCase):
         print(channels)
         self.assertIsInstance(channels, list)
         self.assertIsInstance(channels[0], Channel)
+        self.assertIsInstance(channels[0].uid, str)
+        self.assertIsInstance(channels[0].station_id, str)
 
     def test_get_channel(self):
         api = ChannelApi(self._auth)

@@ -7,6 +7,7 @@ import logging
 from collections import defaultdict
 
 from resources.lib import kodiutils
+from resources.lib.solocoo import Credit
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.epg import EpgApi
@@ -54,7 +55,7 @@ class IPTVManager:
             streams.append(dict(
                 name=channel.title,
                 stream=kodiutils.url_for('play_asset', asset_id=channel.uid),
-                id=channel.uid,
+                id=channel.station_id,
                 logo=channel.icon,
                 preset=channel.number,
             ))
@@ -72,7 +73,7 @@ class IPTVManager:
         # Load EPG data
         channels = channel_api.get_channels()
         for date in ['yesterday', 'today', 'tomorrow']:
-            for channel, programs in epg_api.get_guide([channel.uid for channel in channels], date).items():
+            for channel, programs in epg_api.get_guide_with_capi([channel.station_id for channel in channels], date).items():
                 for program in programs:
                     # Hide these items
                     if program.title == EpgApi.EPG_NO_BROADCAST:
@@ -85,9 +86,21 @@ class IPTVManager:
                         description=program.description,
                         subtitle=None,
                         episode='S%dE%d' % (program.season, program.episode) if program.season and program.episode else None,
-                        genre=None,
+                        genre=program.genres,
                         image=program.cover,
                         date=None,
+                        credits=[{'type': 'actor', 'name': credit.person, 'role': credit.character}
+                                 for credit in program.credit if credit.role == Credit.ROLE_ACTOR]
+                                + [{'type': 'director', 'name': credit.person}
+                                   for credit in program.credit if credit.role == Credit.ROLE_DIRECTOR]
+                                + [{'type': 'producer', 'name': credit.person}
+                                   for credit in program.credit if credit.role == Credit.ROLE_PRODUCER]
+                                + [{'type': 'composer', 'name': credit.person}
+                                   for credit in program.credit if credit.role == Credit.ROLE_COMPOSER]
+                                + [{'type': 'presenter', 'name': credit.person}
+                                   for credit in program.credit if credit.role == Credit.ROLE_PRESENTER]
+                                + [{'type': 'guest', 'name': credit.person}
+                                   for credit in program.credit if credit.role == Credit.ROLE_GUEST],
                         stream=kodiutils.url_for('play_asset', asset_id=program.uid) if program.replay else None))
 
         return dict(version=1, epg=epg)

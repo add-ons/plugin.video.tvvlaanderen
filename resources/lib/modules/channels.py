@@ -143,14 +143,13 @@ class Channels:
         :param str channel_id:          The channel for which we want to show an EPG.
         :param str date:                The date to show.
         """
-        use_capi = True
+        # Lookup with CAPI
+        lookup_id = channel_id.split(':')[1]
+        programs = self._epg_api.get_guide_with_capi([lookup_id], date)
 
-        if use_capi:
-            lookup_id = channel_id.split(':')[1]
-            programs = self._epg_api.get_guide_with_capi([lookup_id], date)
-        else:
-            lookup_id = channel_id.split(':')[0]
-            programs = self._epg_api.get_guide([lookup_id], date)
+        # Lookup with TV API
+        # lookup_id = channel_id.split(':')[0]
+        # programs = self._epg_api.get_guide([lookup_id], date)
 
         listing = [Menu.generate_titleitem_program(item, timeline=True) for item in programs.get(lookup_id)]
 

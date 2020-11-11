@@ -4,73 +4,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 SOLOCOO_API = 'https://tvapi.solocoo.tv/v1'
 
-CAPI_API = 'https://m7be2.solocoo.tv/m7be2iphone/capi.aspx'  # TODO: use tenant
-
-# Source: https://livetv.tv-vlaanderen.be/static/js/common/structures/Channel.ts (via source map)
-
-# EPG program bits
-BIT_EPG_DETAIL_ID = 1
-BIT_EPG_DETAIL_TITLE = 2
-BIT_EPG_DETAIL_DESCRIPTION = 8
-BIT_EPG_DETAIL_AGE = 16
-BIT_EPG_DETAIL_CATEGORY = 32
-BIT_EPG_DETAIL_START = 64
-BIT_EPG_DETAIL_END = 128
-BIT_EPG_DETAIL_FLAGS = 256
-BIT_EPG_DETAIL_GENRE = 512
-BIT_EPG_DETAIL_COVER = 1024
-BIT_EPG_DETAIL_SEASON_NO = 2048
-BIT_EPG_DETAIL_EPISODE_NO = 4096
-BIT_EPG_DETAIL_SERIES_ID = 8192
-BIT_EPG_DETAIL_SG = 16384
-BIT_EPG_DETAIL_CHANEL_NAME = 32768
-BIT_EPG_DETAIL_GENRES = 65536
-BIT_EPG_DETAIL_CREDITS = 131072
-BIT_EPG_DETAIL_FORMAT = 262144
-BIT_EPG_DETAIL_FORMATS = 524288
-BIT_EPG_DETAIL_AIRDATE = 16777216
-
-# EPG program flags
-BIT_EPG_FLAG_LIVE = 1
-BIT_EPG_FLAG_REPEAT = 2
-BIT_EPG_FLAG_HIGHLIGHT = 4
-BIT_EPG_FLAG_LMU = 8
-BIT_EPG_FLAG_REPLAY = 16
-BIT_EPG_FLAG_RESTART = 32
-BIT_EPG_FLAG_RECORD = 64
-
-# Channel detail bits
-BIT_CHANNEL_DETAIL_ID = 1
-BIT_CHANNEL_DETAIL_NUMBER = 2
-BIT_CHANNEL_DETAIL_STATIONID = 4
-BIT_CHANNEL_DETAIL_TITLE = 8
-BIT_CHANNEL_DETAIL_16 = 16  # Unknown
-BIT_CHANNEL_DETAIL_GENRES = 32
-BIT_CHANNEL_DETAIL_FLAGS = 64
-BIT_CHANNEL_DETAIL_URL = 128  # Unknown
-BIT_CHANNEL_DETAIL_DVBS = 256  # 3:3225:21025:235
-BIT_CHANNEL_DETAIL_SDSD = 2048  # 430B0121870002359602990002
-
-# Channel detail flags
-BIT_CHANNEL_FLAG_RECORDABLE = 2
-BIT_CHANNEL_FLAG_EXTERNAL = 8
-BIT_CHANNEL_FLAG_RADIO = 16
-BIT_CHANNEL_FLAG_DISALLOW_WIFI = 32
-BIT_CHANNEL_FLAG_DISALLOW_3G = 64
-BIT_CHANNEL_FLAG_PIN = 256
-BIT_CHANNEL_FLAG_RESTARTABLE = 512
-BIT_CHANNEL_FLAG_HD = 1024
-BIT_CHANNEL_FLAG_REPLAYABLE = 2048
-BIT_CHANNEL_FLAG_NOT_SCHEDULED = 4096
-BIT_CHANNEL_FLAG_BLACKOUT = 8192
-BIT_CHANNEL_FLAG_DISALLOW_MIRROR = 16384
-BIT_CHANNEL_FLAG_INHOME = 32768
-BIT_CHANNEL_FLAG_DISALLOW_RECORD_FF = 524288
-BIT_CHANNEL_FLAG_DISALLOW_REPLAY_FF = 1048576
-BIT_CHANNEL_FLAG_DISALLOW_RESTART_FF = 2097152
-BIT_CHANNEL_FLAG_HAS_FF_RESTRICTIONS = 4194304
-
-
 TENANTS = dict([
     ('tvv', dict(
         name='TV Vlaanderen',
@@ -86,3 +19,101 @@ TENANTS = dict([
     )),
     # and many more, ...
 ])
+
+
+class Channel:
+    """ Channel Object """
+
+    def __init__(self, uid, station_id, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None):
+        """
+        :param Program epg_now:     The currently playing program on this channel.
+        :param Program epg_next:    The next playing program on this channel.
+        """
+        self.uid = uid
+        self.station_id = station_id
+        self.title = title
+        self.icon = icon
+        self.preview = preview
+        self.number = number
+        self.epg_now = epg_now
+        self.epg_next = epg_next
+        self.replay = replay
+        self.radio = radio
+
+        self.available = available
+
+    def __repr__(self):
+        return "%r" % self.__dict__
+
+    def get_combi_id(self):
+        """ Return a combination of the uid and the station_id. """
+        return "%s:%s" % (self.uid, self.station_id)
+
+
+class StreamInfo:
+    """ Stream information """
+
+    def __init__(self, url, protocol, drm_protocol, drm_license_url, drm_certificate):
+        self.url = url
+        self.protocol = protocol
+        self.drm_protocol = drm_protocol
+        self.drm_license_url = drm_license_url
+        self.drm_certificate = drm_certificate
+
+    def __repr__(self):
+        return "%r" % self.__dict__
+
+
+class Program:
+    """ Program object """
+
+    def __init__(self, uid, title, description, cover, preview, start, end, duration, channel_id, formats, genres, replay,
+                 restart, age, series_id=None, season=None, episode=None, credit=None, available=None):
+        """
+
+        :type credit: list[Credit]
+        """
+        self.uid = uid
+        self.title = title
+        self.description = description
+        self.cover = cover
+        self.preview = preview
+        self.start = start
+        self.end = end
+        self.duration = duration
+
+        self.age = age
+        self.channel_id = channel_id
+
+        self.formats = formats
+        self.genres = genres
+
+        self.replay = replay
+        self.restart = restart
+
+        self.series_id = series_id
+        self.season = season
+        self.episode = episode
+
+        self.credit = credit
+
+        self.available = available
+
+    def __repr__(self):
+        return "%r" % self.__dict__
+
+
+class Credit:
+    """ Credit object """
+
+    ROLE_ACTOR = 'Actor'
+    ROLE_COMPOSER = 'Composer'
+    ROLE_DIRECTOR = 'Director'
+    ROLE_GUEST = 'Guest'
+    ROLE_PRESENTER = 'Presenter'
+    ROLE_PRODUCER = 'Producer'
+
+    def __init__(self, role, person, character=None):
+        self.role = role
+        self.person = person
+        self.character = character

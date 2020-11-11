@@ -103,6 +103,10 @@ class AuthApi:
         # Do login so we have valid tokens
         self.login()
 
+    def get_tenant(self):
+        """ Return the tenant information. """
+        return self._tenant
+
     def login(self, force=False):
         """ Make a login request.
 

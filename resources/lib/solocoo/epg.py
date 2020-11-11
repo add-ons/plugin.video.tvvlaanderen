@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import dateutil.parser
 import dateutil.tz
 
-from resources.lib.solocoo import SOLOCOO_API, util, CAPI_API
+from resources.lib.solocoo import SOLOCOO_API, util
 from resources.lib.solocoo.util import parse_program, parse_program_capi
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class EpgApi:
 
     # Request this many channels at the same time
     EPG_CHUNK_SIZE = 40
-    EPG_CAPI_CHUNK_SIZE = 40
+    EPG_CAPI_CHUNK_SIZE = 100
 
     EPG_NO_BROADCAST = 'Geen uitzending'
 
@@ -32,6 +32,7 @@ class EpgApi:
         """
         self._auth = auth
         self._tokens = self._auth.login()  # Login and make sure we have a token
+        self._tenant = self._auth.get_tenant()
 
     def get_guide(self, channels, date_from=None, date_to=None):
         """ Get the guide for the specified channels and date.
@@ -105,38 +106,34 @@ class EpgApi:
 
         programs = {}
 
-        for i in range(0, len(channels), self.EPG_CHUNK_SIZE):
+        for i in range(0, len(channels), self.EPG_CAPI_CHUNK_SIZE):
             _LOGGER.debug('Fetching EPG at index %d', i)
 
-            # We request the following details:
-            # 736763 =
-            #   BIT_EPG_DETAIL_ID | BIT_EPG_DETAIL_TITLE | BIT_EPG_DETAIL_DESCRIPTION | BIT_EPG_DETAIL_AGE |
-            #   BIT_EPG_DETAIL_CATEGORY | BIT_EPG_DETAIL_START | BIT_EPG_DETAIL_END | BIT_EPG_DETAIL_FLAGS |
-            #   BIT_EPG_DETAIL_COVER | BIT_EPG_DETAIL_SEASON_NO | BIT_EPG_DETAIL_EPISODE_NO |
-            #   BIT_EPG_DETAIL_SERIES_ID | BIT_EPG_DETAIL_GENRES | BIT_EPG_DETAIL_CREDITS | BIT_EPG_DETAIL_FORMATS
-
-            reply = util.http_get(CAPI_API,
-                                  params={
-                                      'z': 'epg',
-                                      'f_format': 'pg',  # program guide
-                                      'v': 3,  # version
-                                      'u': self._tokens.device_serial,
-                                      'a': 'tvv',  # TODO: use tenant
-                                      's': '!'.join(channels[i:i + self.EPG_CHUNK_SIZE]),  # station id's separated with a !
-                                      'f': date_from.strftime("%s") + '000',  # from timestamp
-                                      't': date_to.strftime("%s") + '000',  # to timestamp
-                                      'cs': 736763,
-                                      'lng': 'nl_BE',
-                                  },
-                                  token_cookie=self._tokens.aspx_token)
+            reply = util.http_get(
+                'https://{domain}/{env}/capi.aspx'.format(domain=self._tenant.get('domain'), env=self._tenant.get('env')),
+                params={
+                    'z': 'epg',
+                    'f_format': 'pg',  # program guide
+                    'v': 3,  # version
+                    'u': self._tokens.device_serial,
+                    'a': self._tenant.get('app'),
+                    's': '!'.join(channels[i:i + self.EPG_CAPI_CHUNK_SIZE]),  # station id's separated with a !
+                    'f': date_from.strftime("%s") + '000',  # from timestamp
+                    't': date_to.strftime("%s") + '000',  # to timestamp
+                    # 736763 = BIT_EPG_DETAIL_ID | BIT_EPG_DETAIL_TITLE | BIT_EPG_DETAIL_DESCRIPTION | BIT_EPG_DETAIL_AGE |
+                    #          BIT_EPG_DETAIL_CATEGORY | BIT_EPG_DETAIL_START | BIT_EPG_DETAIL_END | BIT_EPG_DETAIL_FLAGS |
+                    #          BIT_EPG_DETAIL_COVER | BIT_EPG_DETAIL_SEASON_NO | BIT_EPG_DETAIL_EPISODE_NO |
+                    #          BIT_EPG_DETAIL_SERIES_ID | BIT_EPG_DETAIL_GENRES | BIT_EPG_DETAIL_CREDITS | BIT_EPG_DETAIL_FORMATS
+                    'cs': 736763,
+                    'lng': 'nl_BE',
+                },
+                token_cookie=self._tokens.aspx_token)
 
             data = json.loads(reply.text)
 
             # Parse to a dict (channel: list[Program])
-            programs.update({channel: [parse_program_capi(program) for program in programs]
+            programs.update({channel: [parse_program_capi(program, self._tenant) for program in programs]
                              for channel, programs in data[1].items()})
-
-        _LOGGER.warning(programs)
 
         return programs
 

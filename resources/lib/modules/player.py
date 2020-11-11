@@ -7,10 +7,10 @@ import logging
 
 from resources.lib import kodiutils
 from resources.lib.modules.menu import Menu
+from resources.lib.solocoo import Program, Channel
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException, InvalidTokenException
-from resources.lib.solocoo.util import Program, Channel
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -10,6 +10,7 @@ import dateutil.tz
 
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
+from resources.lib.solocoo import Credit
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -122,6 +123,11 @@ class Menu:
                 'aired': item.start.strftime('%Y-%m-%d'),
                 'date': item.start.strftime('%d.%m.%Y'),
                 'duration': item.duration,
+                'cast':
+                    [(credit.person, credit.character) for credit in item.credit if credit.role == Credit.ROLE_ACTOR]
+                    + [credit.person for credit in item.credit if credit.role in [Credit.ROLE_PRESENTER, Credit.ROLE_GUEST]],
+                'director': [credit.person for credit in item.credit if credit.role in [Credit.ROLE_DIRECTOR, Credit.ROLE_PRODUCER]],
+                # 'credits': [credit.person for credit in item.credit if credit.role in [Credit.ROLE_COMPOSER]],
             },
             prop_dict={
                 'inputstream.adaptive.play_timeshift_buffer': 'true',  # Play from the beginning
