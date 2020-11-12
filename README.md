@@ -10,11 +10,7 @@
 
 > Note: Je hebt hiervoor een betaald abonnement nodig bij [TV Vlaanderen](https://www.tv-vlaanderen.be/).
 
-## Installatie
-
-Deze addon staat momenteel nog niet de repository van Kodi zelf, je moet deze voorlopig nog handmatig installeren en updaten.
-
-Je kan de [laatste release](https://github.com/add-ons/plugin.video.tvvlaanderen/releases) downloaden, of een [development zip](https://github.com/add-ons/plugin.video.tvvlaanderen/archive/master.zip) van Github downloaden met de laatste wijzigingen.
+Meer informatie kan je vinden op de [Wiki pagina](https://github.com/add-ons/plugin.video.tvvlaanderen/wiki).
 
 ## Features
 
