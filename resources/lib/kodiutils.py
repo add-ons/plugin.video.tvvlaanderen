@@ -450,6 +450,11 @@ def has_addon(name):
     return xbmc.getCondVisibility('System.HasAddon(%s)' % name) == 1
 
 
+def has_credentials():
+    """Whether the add-on has credentials filled in"""
+    return bool(get_setting('username') and get_setting('password'))
+
+
 def kodi_version():
     """Returns full Kodi version as string"""
     return xbmc.getInfoLabel('System.BuildVersion').split(' ')[0]
@@ -477,6 +482,11 @@ def get_cache_path():
 def get_addon_info(key):
     """Return addon information"""
     return to_unicode(ADDON.getAddonInfo(key))
+
+
+def execute_builtin(function):
+    """ Execute a Kodi Builtin """
+    xbmc.executebuiltin(function)
 
 
 def container_refresh(url=None):

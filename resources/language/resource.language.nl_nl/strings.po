@@ -7,18 +7,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 ### MENUS
-# msgctxt "#30001"
-# msgid "A-Z"
-# msgstr "A-Z"
-
-# msgctxt "#30002"
-# msgid "Alphabetically sorted list of programs"
-# msgstr "Volledige lijst van programma's"
-
-# msgctxt "#30003"
-# msgid "Catalogue"
-# msgstr "Catalogus"
-
 msgctxt "#30007"
 msgid "Channels"
 msgstr "Kanalen"
@@ -34,10 +22,6 @@ msgstr "Zoeken"
 msgctxt "#30010"
 msgid "Search through the catalogue"
 msgstr "Doorzoek de catalogus"
-
-# msgctxt "#30013"
-# msgid "TV guide"
-# msgstr "Tv-gids"
 
 
 ### SUBMENUS
@@ -65,41 +49,11 @@ msgctxt "#30056"
 msgid "Browse the replay catalog for [B]{channel}[/B]"
 msgstr "Doorblader de replay catalogus voor [B]{channel}[/B]"
 
-# msgctxt "#30057"
-# msgid "Categories for [B]{channel}[/B]"
-# msgstr "Categoriën voor [B]{channel}[/B]"
-
-# msgctxt "#30058"
-# msgid "Browse the Categories for [B]{channel}[/B]"
-# msgstr "Doorblader de categoriën van [B]{channel}[/B]"
-
-# msgctxt "#30059"
-# msgid "Clips of [B]{program}[/B]"
-# msgstr "Clips van [B]{program}[/B]"
-
-# msgctxt "#30060"
-# msgid "Watch short clips of [B]{program}[/B]"
-# msgstr "Bekijk korte videoclips van [B]{program}[/B]"
-
-
-### CONTEXT MENU
-# msgctxt "#30102"
-# msgid "Go to Program"
-# msgstr "Ga naar programma"
-
 
 ### CODE
-# msgctxt "#30204"
-# msgid "All seasons"
-# msgstr "Alle seizoenen"
-
-# msgctxt "#30205"
-# msgid "Season {season}"
-# msgstr "Seizoen {season}"
-
-# msgctxt "#30206"
-# msgid "Watch [B]{label}[/B] on YouTube"
-# msgstr "Bekijk [B]{label}[/B] op YouTube"
+msgctxt "#30203"
+msgid "Your credentials are not valid!"
+msgstr "De inloggegevens zijn onjuist!"
 
 msgctxt "#30208"
 msgid "[B]{days} days[/B] remaining"
@@ -145,54 +99,17 @@ msgstr "Morgen"
 
 
 ### MESSAGES
-# msgctxt "#30701"
-# msgid "To watch a video, you need to enter your credentials. Do you want to enter them now?"
-# msgstr "Om een video te bekijken moet je je inloggegevens ingeven. Wil je dit nu doen?"
+msgctxt "#30701"
+msgid "To watch a video, you need to enter your credentials. Do you want to enter them now?"
+msgstr "Om een video te bekijken moet je je inloggegevens ingeven. Wil je dit nu doen?"
 
-# msgctxt "#30702"
-# msgid "An error occurred while authenticating: {error}."
-# msgstr "Er is een fout opgetreden tijdens het aanmelden: {error}."
-
-# msgctxt "#30709"
-# msgid "Geo-blocked video"
-# msgstr "Video is geografisch geblokkeerd"
-
-# msgctxt "#30710"
-# msgid "This video is geo-blocked and can't be played from your location."
-# msgstr "Deze video is geografisch geblokkeerd en kan niet worden afgespeeld vanaf je locatie."
-
-# msgctxt "#30711"
-# msgid "Unavailable video"
-# msgstr "Onbeschikbare video"
+msgctxt "#30702"
+msgid "An error occurred while authenticating: {error}."
+msgstr "Er is een fout opgetreden tijdens het aanmelden: {error}."
 
 msgctxt "#30712"
 msgid "The video is unavailable and can't be played right now."
 msgstr "Deze video is niet beschikbaar en kan nu niet worden afgespeeld."
-
-# msgctxt "#30713"
-# msgid "The requested video was not found in the guide."
-# msgstr "De gevraagde video werd niet gevonden in de tv-gids."
-
-# msgctxt "#30714"
-# msgid "Local metadata is cleared."
-# msgstr "De lokale metadata is verwijderd."
-
-# msgctxt "#30715"
-# msgid "Updating metadata..."
-# msgstr "Vernieuwen metadata..."
-
-# msgctxt "#30716"
-# msgid "Updating metadata ({index}/{total})..."
-# msgstr "Vernieuwen metadata ({index}/{total})..."
-
-# msgctxt "#30717"
-# msgid "This program is not available in the catalogue."
-# msgstr "Dit programma is niet beschikbaar in de catalogus."
-
-# msgctxt "#30718"
-# msgid "There is no live stream available for {channel}."
-# msgstr "Er is geen live stream beschikbaar voor {channel}."
-
 
 
 ### SETTINGS

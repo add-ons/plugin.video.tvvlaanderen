@@ -5,9 +5,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 import logging
 
+from requests import HTTPError
 from routing import Plugin
 
-from resources.lib import kodilogging
+from resources.lib import kodilogging, kodiutils
+from resources.lib.solocoo.auth import AuthApi
+from resources.lib.solocoo.exceptions import InvalidLoginException
 
 kodilogging.config()
 routing = Plugin()  # pylint: disable=invalid-name
@@ -15,6 +18,39 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @routing.route('/')
+def index():
+    """ Ask to login, or go to the main menu. """
+    if not kodiutils.has_credentials():
+        if not kodiutils.yesno_dialog(message=kodiutils.localize(30701)):  # You need to configure your credentials...
+            # We have no credentials, return to the Home Menu
+            kodiutils.end_of_directory()
+            kodiutils.execute_builtin('ActivateWindow(Home)')
+            return
+
+        kodiutils.open_settings()
+
+    try:
+        # Try authentication
+        AuthApi(username=kodiutils.get_setting('username'),
+                password=kodiutils.get_setting('password'),
+                tenant=kodiutils.get_setting('tenant'),
+                token_path=kodiutils.get_tokens_path())
+    except InvalidLoginException:
+        kodiutils.ok_dialog(message=kodiutils.localize(30203))  # Your credentials are not valid!
+        kodiutils.open_settings()
+        kodiutils.execute_builtin('ActivateWindow(Home)')
+        kodiutils.end_of_directory()
+        return
+
+    except HTTPError as exc:
+        kodiutils.ok_dialog(message=kodiutils.localize(30702, code='HTTP %d' % exc.response.status_code))  # Unknown error while logging in: {code}
+        kodiutils.end_of_directory()
+        return
+
+    show_main_menu()
+
+
+@routing.route('/menu')
 def show_main_menu():
     """ Show the main menu """
     from resources.lib.modules.menu import Menu
