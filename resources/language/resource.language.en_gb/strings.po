@@ -6,18 +6,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 ### MENUS
-# msgctxt "#30001"
-# msgid "A-Z"
-# msgstr ""
-
-# msgctxt "#30002"
-# msgid "Alphabetically sorted list of programs"
-# msgstr ""
-
-# msgctxt "#30003"
-# msgid "Catalogue"
-# msgstr ""
-
 msgctxt "#30007"
 msgid "Channels"
 msgstr ""
@@ -33,10 +21,6 @@ msgstr ""
 msgctxt "#30010"
 msgid "Search through the catalogue"
 msgstr ""
-
-# msgctxt "#30013"
-# msgid "TV guide"
-# msgstr ""
 
 
 ### SUBMENUS
@@ -64,41 +48,11 @@ msgctxt "#30056"
 msgid "Browse the replay catalog for [B]{channel}[/B]"
 msgstr ""
 
-# msgctxt "#30057"
-# msgid "Categories for [B]{channel}[/B]"
-# msgstr ""
-
-# msgctxt "#30058"
-# msgid "Browse the Categories for [B]{channel}[/B]"
-# msgstr ""
-
-# msgctxt "#30059"
-# msgid "Clips of [B]{program}[/B]"
-# msgstr ""
-
-# msgctxt "#30060"
-# msgid "Watch short clips of [B]{program}[/B]"
-# msgstr ""
-
-
-### CONTEXT MENU
-# msgctxt "#30102"
-# msgid "Go to Program"
-# msgstr ""
-
 
 ### CODE
-# msgctxt "#30204"
-# msgid "All seasons"
-# msgstr ""
-
-# msgctxt "#30205"
-# msgid "Season {season}"
-# msgstr ""
-
-# msgctxt "#30206"
-# msgid "Watch [B]{label}[/B] on YouTube"
-# msgstr ""
+msgctxt "#30203"
+msgid "Your credentials are not valid!"
+msgstr ""
 
 msgctxt "#30208"
 msgid "[B]{days} days[/B] remaining"
@@ -144,53 +98,17 @@ msgstr ""
 
 
 ### MESSAGES
-# msgctxt "#30701"
-# msgid "To watch a video, you need to enter your credentials. Do you want to enter them now?"
-# msgstr ""
+msgctxt "#30701"
+msgid "To watch a video, you need to enter your credentials. Do you want to enter them now?"
+msgstr ""
 
-# msgctxt "#30702"
-# msgid "An error occurred while authenticating: {error}."
-# msgstr ""
-
-# msgctxt "#30709"
-# msgid "Geo-blocked video"
-# msgstr ""
-
-# msgctxt "#30710"
-# msgid "This video is geo-blocked and can't be played from your location."
-# msgstr ""
-
-# msgctxt "#30711"
-# msgid "Unavailable video"
-# msgstr ""
+msgctxt "#30702"
+msgid "An error occurred while authenticating: {error}."
+msgstr ""
 
 msgctxt "#30712"
 msgid "The video is unavailable and can't be played right now."
 msgstr ""
-
-# msgctxt "#30713"
-# msgid "The requested video was not found in the guide."
-# msgstr ""
-
-# msgctxt "#30714"
-# msgid "Local metadata is cleared."
-# msgstr ""
-
-# msgctxt "#30715"
-# msgid "Updating metadata..."
-# msgstr ""
-
-# msgctxt "#30716"
-# msgid "Updating metadata ({index}/{total})..."
-# msgstr ""
-
-# msgctxt "#30717"
-# msgid "This program is not available in the catalogue."
-# msgstr ""
-
-# msgctxt "#30718"
-# msgid "There is no live stream available for {channel}."
-# msgstr ""
 
 
 ### SETTINGS
