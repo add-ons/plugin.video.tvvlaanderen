@@ -144,8 +144,16 @@ class Menu:
 
         :rtype: TitleItem
         """
+        if item.epg_now:
+            title = item.title + '[COLOR gray] | {title} ({start} - {end})[/COLOR]'.format(
+                title=item.epg_now.title,
+                start=item.epg_now.start.strftime('%H:%M'),
+                end=item.epg_now.end.strftime('%H:%M'))
+        else:
+            title = item.title
+
         return TitleItem(
-            title=item.title,
+            title=title,
             path=kodiutils.url_for('play_asset', asset_id=item.uid) + '?.pvr',
             art_dict={
                 'cover': item.icon,
