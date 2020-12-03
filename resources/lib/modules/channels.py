@@ -36,17 +36,18 @@ class Channels:
         channels = self._channel_api.get_channels()
 
         # Load EPG details for the next 6 hours
-        date_from = datetime.now(dateutil.tz.UTC).replace(minute=0, second=0, microsecond=0)
+        date_now = datetime.now(dateutil.tz.UTC)
+        date_from = date_now.replace(minute=0, second=0, microsecond=0)
         date_to = (date_from + timedelta(hours=6))
         epg = self._epg_api.get_guide([channel.uid for channel in channels], date_from, date_to)
         for channel in channels:
+            shows = [show for show in epg.get(channel.uid, {}) if show.end > date_now]
             try:
-                channel.epg_now = epg.get(channel.uid, {})[0]
+                channel.epg_now = shows[0]
             except (IndexError, KeyError):
                 pass
-
             try:
-                channel.epg_next = epg.get(channel.uid, {})[1]
+                channel.epg_next = shows[1]
             except (IndexError, KeyError):
                 pass
 
