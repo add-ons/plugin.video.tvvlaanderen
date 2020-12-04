@@ -5,10 +5,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import json
 import logging
-from collections import defaultdict
-from datetime import datetime, timedelta
 
-import dateutil.tz
 from requests import HTTPError
 
 from resources.lib.solocoo import SOLOCOO_API, util, StreamInfo
@@ -77,38 +74,6 @@ class ChannelApi:
         channels = [channel for channel in channels if channel.available is not False]
 
         return channels
-
-    def get_current_epg(self, channels):
-        """ Get the currently playing program.
-
-        :param list[str] channels:          The channels for which we want to request an EPG.
-
-        :returns: A dictionary with the channels as key and a list of Programs as value.
-        :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
-        """
-        # We fetch all programs between now and 3 hours in the future
-        date_now = datetime.now(dateutil.tz.UTC)
-        date_from = date_now.replace(minute=0, second=0, microsecond=0)
-        date_to = (date_from + timedelta(hours=3))
-
-        reply = util.http_get(SOLOCOO_API + '/schedule',
-                              params={
-                                  'channels': ','.join(channels),
-                                  'from': date_from.isoformat().replace('+00:00', ''),
-                                  'until': date_to.isoformat().replace('+00:00', ''),
-                              },
-                              token_bearer=self._tokens.jwt_token)
-        data = json.loads(reply.text)
-
-        # Parse to a dict (channel: list[Program])
-        epg = defaultdict(list)
-        for channel, programs in data.get('epg', []).items():
-            for program in programs:
-                parsed_program = parse_program(program)
-                if parsed_program.end > date_now:
-                    epg[channel].append(parsed_program)
-
-        return epg
 
     def get_asset(self, asset_id):
         """ Get channel information for the requested asset.
