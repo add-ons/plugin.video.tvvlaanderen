@@ -1,5 +1,24 @@
 # Changelog
 
+## [v1.0.0](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.0) (2020-12-04)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v0.0.1...v1.0.0)
+
+**Implemented enhancements:**
+
+- Add PIN protection to 18+ channels [\#26](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/26) ([michaelarnauts](https://github.com/michaelarnauts))
+- Add EPG to channel listing [\#24](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/24) ([michaelarnauts](https://github.com/michaelarnauts))
+- Improve authentication flow [\#23](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/23) ([michaelarnauts](https://github.com/michaelarnauts))
+
+**Fixed bugs:**
+
+- Fix EPG in the channels view [\#25](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/25) ([michaelarnauts](https://github.com/michaelarnauts))
+- Depend on inputstreamhelper to make sure widevine is installed [\#20](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/20) ([mediaminister](https://github.com/mediaminister))
+
+**Merged pull requests:**
+
+- Run tests on Python 3.9 [\#22](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/22) ([michaelarnauts](https://github.com/michaelarnauts))
+
 ## [v0.0.1](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v0.0.1) (2020-11-11)
 
 [Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/de15b078e0084d6bf2ae0a60af1dd902cc81fcd0...v0.0.1)
