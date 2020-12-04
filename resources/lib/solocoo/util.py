@@ -117,6 +117,7 @@ def parse_channel(channel, offers=None, station_id=None):
         radio=channel.get('params', {}).get('radio', False),
         replay=channel.get('params', {}).get('replayExpiry', False) is not False,
         available=check_deals_entitlement(channel.get('deals'), offers),
+        pin=channel.get('params', {}).get('pinProtected', False),
     )
 
 

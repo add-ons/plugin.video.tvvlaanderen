@@ -10,6 +10,7 @@ import dateutil.tz
 
 from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
+from resources.lib.modules import SETTINGS_ADULT_HIDE, SETTINGS_ADULT_ALLOW
 from resources.lib.modules.menu import Menu
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
@@ -33,7 +34,7 @@ class Channels:
 
     def show_channels(self):
         """ Shows TV channels. """
-        channels = self._channel_api.get_channels()
+        channels = self._channel_api.get_channels(filter_pin=kodiutils.get_setting_int('interface_adult') == SETTINGS_ADULT_HIDE)
 
         # Load EPG details for the next 6 hours
         date_now = datetime.now(dateutil.tz.UTC)
@@ -66,6 +67,19 @@ class Channels:
         :param str channel_id:          The channel we want to display.
         """
         channel = self._channel_api.get_asset(channel_id.split(':')[0])
+
+        # Verify PIN
+        if channel.pin and kodiutils.get_setting_int('interface_adult') != SETTINGS_ADULT_ALLOW:
+            pin = kodiutils.get_numeric_input(kodiutils.localize(30204))  # Enter PIN
+            if not pin:
+                # Cancelled
+                kodiutils.end_of_directory()
+                return
+
+            if not self._channel_api.verify_pin(pin):
+                kodiutils.ok_dialog(message=kodiutils.localize(30205))  # The PIN you have entered is invalid!
+                kodiutils.end_of_directory()
+                return
 
         listing = []
 

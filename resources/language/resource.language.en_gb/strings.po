@@ -54,6 +54,14 @@ msgctxt "#30203"
 msgid "Your credentials are not valid!"
 msgstr ""
 
+msgctxt "#30204"
+msgid "Enter PIN"
+msgstr ""
+
+msgctxt "#30205"
+msgid "The PIN you have entered is invalid!"
+msgstr ""
+
 msgctxt "#30208"
 msgid "[B]{days} days[/B] remaining"
 msgstr ""
@@ -133,20 +141,24 @@ msgid "Interface"
 msgstr ""
 
 msgctxt "#30821"
-msgid "Metadata"
+msgid "Channels"
 msgstr ""
 
 msgctxt "#30822"
-msgid "Periodically refresh metadata in the background"
+msgid "Parental Content"
 msgstr ""
 
 msgctxt "#30823"
-msgid "Update local metadata now…"
-msgstr "De lokale metadata nu vernieuwen…"
+msgid "Ask PIN for 18+ channels"
+msgstr ""
 
 msgctxt "#30824"
-msgid "Clear local metadata…"
-msgstr "De lokale metadata verwijderen…"
+msgid "Hide 18+ channels"
+msgstr ""
+
+msgctxt "#30825"
+msgid "Allow 18+ channels without asking PIN"
+msgstr ""
 
 msgctxt "#30840"
 msgid "Integration"

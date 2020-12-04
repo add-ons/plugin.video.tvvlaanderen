@@ -30,7 +30,7 @@ class ChannelApi:
         self._tokens = self._auth.login()
         self._tenant = self._auth.get_tenant()
 
-    def get_channels(self):
+    def get_channels(self, filter_unavailable=True, filter_pin=False):
         """ Get all channels.
 
         :returns: A list of all channels.
@@ -70,8 +70,13 @@ class ChannelApi:
             for channel in data.get('channels', []) if channel.get('alias', False) is False
         ]
 
-        # Filter only available channels
-        channels = [channel for channel in channels if channel.available is not False]
+        # Filter unavailable channels
+        if filter_unavailable:
+            channels = [channel for channel in channels if channel.available is not False]
+
+        # Filter PIN protected channels
+        if filter_pin:
+            channels = [channel for channel in channels if channel.pin is False]
 
         return channels
 
@@ -207,3 +212,17 @@ class ChannelApi:
         )
 
         return stream
+
+    def verify_pin(self, pin):
+        """ Verify the PIN. """
+        try:
+            util.http_post(
+                SOLOCOO_API + '/pin/parental/verify',
+                token_bearer=self._tokens.jwt_token,
+                data={
+                    "pin": pin,
+                }
+            )
+            return True
+        except HTTPError:
+            return False
