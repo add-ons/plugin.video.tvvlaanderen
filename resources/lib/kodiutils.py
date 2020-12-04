@@ -241,6 +241,12 @@ def get_search_string(heading='', message=''):
     return search_string
 
 
+def get_numeric_input(heading='', default=''):
+    """Ask the user for a numeric input."""
+    value = xbmcgui.Dialog().numeric(0, heading, default)
+    return value
+
+
 def ok_dialog(heading='', message=''):
     """Show Kodi's OK dialog"""
     from xbmcgui import Dialog

@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+""" Modules """
+
+SETTINGS_ADULT_ASK_PIN = 0
+SETTINGS_ADULT_HIDE = 1
+SETTINGS_ADULT_ALLOW = 2

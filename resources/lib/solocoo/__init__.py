@@ -24,7 +24,7 @@ TENANTS = dict([
 class Channel:
     """ Channel Object """
 
-    def __init__(self, uid, station_id, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None):
+    def __init__(self, uid, station_id, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None, pin=None):
         """
         :param Program epg_now:     The currently playing program on this channel.
         :param Program epg_next:    The next playing program on this channel.
@@ -41,6 +41,7 @@ class Channel:
         self.radio = radio
 
         self.available = available
+        self.pin = pin
 
     def __repr__(self):
         return "%r" % self.__dict__
