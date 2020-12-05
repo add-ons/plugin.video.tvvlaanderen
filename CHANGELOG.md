@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.0](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.0) (2020-12-04)
+## [v1.0.0](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.0) (2020-12-05)
 
 [Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v0.0.1...v1.0.0)
 
