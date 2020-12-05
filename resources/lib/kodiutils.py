@@ -238,7 +238,7 @@ def get_search_string(heading='', message=''):
     keyboard.doModal()
     if keyboard.isConfirmed():
         search_string = to_unicode(keyboard.getText())
-    return search_string
+    return search_string.strip()
 
 
 def get_numeric_input(heading='', default=''):
