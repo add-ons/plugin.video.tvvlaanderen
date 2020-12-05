@@ -81,6 +81,7 @@ class AuthApi:
         :param str username:            The username of the account.
         :param str password:            The password of the account.
         :param str tenant:              The tenant code of the account (eg. tvv).
+        :param str token_path:          The path where we can cache our token.
         """
         self._username = username
         self._password = password
@@ -112,7 +113,7 @@ class AuthApi:
 
         :param bool force:              Force authenticating from scratch without cached tokens.
 
-        :return:
+        :returns:                       An object containing tokens.
         :rtype: AccountStorage
         """
         # Check if credentials have changed
@@ -187,7 +188,7 @@ class AuthApi:
         :param str username:            The username to authenticate with.
         :param str password:            The password to authenticate with.
 
-        :return: A tuple (challenge_id, challenge_secret) that can be used to fetch a token.
+        :returns:                       A tuple (challenge_id, challenge_secret) that can be used to fetch a token.
         :rtype: tuple(str, str)
         """
         if username and password:
@@ -212,7 +213,6 @@ class AuthApi:
                 serial=device_serial,
             )
 
-        # TODO: catch exception
         reply = util.http_post('https://{domain}/{env}/challenge.aspx'.format(domain=self._tenant.get('domain'),
                                                                               env=self._tenant.get('env')),
                                data=data)
@@ -223,7 +223,10 @@ class AuthApi:
     def _get_oauth_code(self, username, password):
         """ Do login with the sso and return the OAuth code.
 
-        :return: An OAuth code we can use to continue authenticating.
+        :param str username:            The username to authenticate with.
+        :param str password:            The password to authenticate with.
+
+        :returns:                       An OAuth code we can use to continue authenticating.
         :rtype: string
         """
         # This is probably not necessary for all providers, and this also might need some factory pattern to support
@@ -266,8 +269,8 @@ class AuthApi:
         :param str challenge_secret:    The challenge secret we got from logging in.
         :param str device_serial:       The device serial of this running Kodi instance.
 
-        :return: An ASPX token.
-        :rtype str
+        :returns:                       An ASPX token.
+        :rtype: str
         """
         reply = util.http_post(
             'https://{domain}/{env}/login.aspx'.format(domain=self._tenant.get('domain'),
@@ -281,7 +284,6 @@ class AuthApi:
 
         # We got redirected, and the last response doesn't contain the cookie we need.
         # We need to get it from the redirect history.
-
         return reply.history[0].cookies.get('.ASPXAUTH')
 
     def _get_sapi_token(self, aspx_token):
@@ -289,8 +291,8 @@ class AuthApi:
 
         :param str aspx_token:          The ASPX cookie we can use to authenticate.
 
-        :return: A SAPI token.
-        :rtype str
+        :returns:                        A SAPI token.
+        :rtype: str
         """
         reply = util.http_get('https://{domain}/{env}/capi.aspx?z=ssotoken'.format(domain=self._tenant.get('domain'),
                                                                                    env=self._tenant.get('env')),
@@ -299,6 +301,15 @@ class AuthApi:
         return json.loads(reply.text).get('ssotoken')
 
     def _get_jwt_token(self, sapi_token, device_name, device_serial):
+        """ Get a JWT token.
+
+        :param str sapi_token:          The SAPI token we got when authenticating.
+        :param str device_name:         The name of this device.
+        :param str device_serial:       The serial number of this device.
+
+        :returns:                       A JWT token.
+        :rtype: str
+        """
         reply = util.http_post(SOLOCOO_API + '/session',
                                data=dict(
                                    sapiToken=sapi_token,
@@ -353,7 +364,7 @@ class AuthApi:
     def remove_device(self, uid):
         """ Remove the specified device.
 
-        :param str uid:         The ID of the device to remove.
+        :param str uid:                 The ID of the device to remove.
         """
         util.http_post(SOLOCOO_API + '/devices', token_bearer=self._account.jwt_token,
                        data={

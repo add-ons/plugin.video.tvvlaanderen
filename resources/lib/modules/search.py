@@ -18,7 +18,7 @@ class Search:
     """ Menu code related to search """
 
     def __init__(self):
-        """ Initialise object """
+        """ Initialise object. """
         auth = AuthApi(username=kodiutils.get_setting('username'),
                        password=kodiutils.get_setting('password'),
                        tenant=kodiutils.get_setting('tenant'),

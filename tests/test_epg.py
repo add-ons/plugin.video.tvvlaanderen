@@ -52,14 +52,6 @@ class TestEpg(unittest.TestCase):
         self.assertIsInstance(programs, list)
         self.assertIsInstance(programs[0], Program)
 
-    def test_get_program(self):
-        api = EpgApi(self._auth)
-
-        program_id = 'RsLDvuKQLenxLpd7dd2mi1rxLGNvg8_EHaRGSOmT'
-
-        program = api.get_program(program_id)
-        self.assertIsInstance(program, Program)
-
 
 if __name__ == '__main__':
     unittest.main()

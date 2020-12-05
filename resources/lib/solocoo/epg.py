@@ -40,6 +40,8 @@ class EpgApi:
         :param list|str channels:       A single channel or a list of channels to fetch.
         :param str|datetime date_from:  The date of the guide we want to fetch.
         :param str|datetime date_to:    The date of the guide we want to fetch.
+
+        :returns:                       A parsed dict with EPG data.
         :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
         """
         # Allow to specify one channel, and we map it to a list
@@ -87,6 +89,8 @@ class EpgApi:
         :param list|str channels:       A single channel or a list of channels to fetch.
         :param str|datetime date_from:  The date of the guide we want to fetch.
         :param str|datetime date_to:    The date of the guide we want to fetch.
+
+        :returns:                       A parsed dict with EPG data.
         :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
         """
         # Allow to specify one channel, and we map it to a list
@@ -137,24 +141,13 @@ class EpgApi:
 
         return programs
 
-    def get_program(self, uid):
-        """ Get program details by calling the API.
-
-        :param str uid:                 The ID of the program.
-        :rtype: resources.lib.solocoo.util.Program
-        """
-        reply = util.http_get(SOLOCOO_API + '/assets/{uid}'.format(uid=uid),
-                              token_bearer=self._tokens.jwt_token)
-        data = json.loads(reply.text)
-
-        # Parse to a Program object
-        return parse_program(data)
-
     @staticmethod
     def _parse_date(date):
         """ Parse the passed date to a real date.
 
         :param str|datetime date:       The date to parse.
+
+        :returns:                       A parsed date.
         :rtype: datetime
          """
         if isinstance(date, datetime):
@@ -172,5 +165,4 @@ class EpgApi:
         # Mark as midnight
         date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=dateutil.tz.gettz('CET'))
         date_obj = date_obj.astimezone(dateutil.tz.gettz('UTC'))
-
         return date_obj

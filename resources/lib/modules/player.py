@@ -19,7 +19,7 @@ class Player:
     """ Code responsible for playing media """
 
     def __init__(self):
-        """ Initialise object """
+        """ Initialise object. """
         self._auth = AuthApi(username=kodiutils.get_setting('username'),
                              password=kodiutils.get_setting('password'),
                              tenant=kodiutils.get_setting('tenant'),
@@ -29,7 +29,7 @@ class Player:
     def play_asset(self, asset_id):
         """ Play an asset (can be a program of a live channel).
 
-        :param string asset_id:       The ID of the asset to play.
+        :param string asset_id:         The ID of the asset to play.
         """
         # Get asset info
         if len(asset_id) == 32:
@@ -73,7 +73,7 @@ class Player:
         :param dict[str, str] key_headers:
         :param str key_value:
 
-        :returns:   A license key string that can be passed to inputstream.adaptive.
+        :returns:                       A license key string that can be passed to inputstream.adaptive.
         :rtype: str
         """
         try:  # Python 3

@@ -25,10 +25,10 @@ _SESSION.headers['User-Agent'] = \
 def find_image(images, image_type):
     """ Find the largest image of the specified type.
 
-    :param List[dict] images:       A list of all images.
-    :param str image_type:          Type of image (la=landscape, po=portrait, lv=live).
+    :param List[dict] images:           A list of all images.
+    :param str image_type:              Type of image (la=landscape, po=portrait, lv=live).
 
-    :returns:                       The requested image in the highest quality.
+    :returns:                           The requested image in the highest quality.
     :rtype: str
     """
     for size in ['lg', 'md', 'sm']:
@@ -45,7 +45,7 @@ def check_deals_entitlement(deals, offers):
     :param List[object] deals:          A list of deals.
     :param List[str] offers:            A list of the offers that we have.
 
-    :returns: Returns False if we have no deal, True if we have a non-expiring deal or else a datetime with the expiry date.
+    :returns:                           Returns False if we have no deal, True if we have a non-expiring deal or a datetime with the expiry date.
     :rtype: bool|datetime
     """
 
@@ -98,11 +98,11 @@ def check_deals_entitlement(deals, offers):
 def parse_channel(channel, offers=None, station_id=None):
     """ Parse the API result of a channel into a Channel object.
 
-    :param dict channel:            The channel info from the API.
-    :param List[str] offers:        A list of offers that we have.
-    :param str station_id:          The station ID of the CAPI.
+    :param dict channel:                The channel info from the API.
+    :param List[str] offers:            A list of offers that we have.
+    :param str station_id:              The station ID of the CAPI.
 
-    :returns: A channel that is parsed.
+    :returns:                           A channel that is parsed.
     :rtype: Channel
     """
     return Channel(
@@ -124,10 +124,10 @@ def parse_channel(channel, offers=None, station_id=None):
 def parse_program(program, offers=None):
     """ Parse a program dict from the TV API.
 
-    :param dict program:            The program object to parse.
-    :param List[str] offers:        A list of offers that we have.
+    :param dict program:                The program object to parse.
+    :param List[str] offers:            A list of offers that we have.
 
-    :returns: A program that is parsed.
+    :returns:                           A program that is parsed.
     :rtype: Program
     """
     if not program:
@@ -169,10 +169,10 @@ def parse_program(program, offers=None):
 def parse_program_capi(program, tenant):
     """ Parse an program dict from the CAPI.
 
-    :param dict program:            The program object to parse.
-    :param dict tenant:             The tenant object to help with some URL's.
+    :param dict program:                The program object to parse.
+    :param dict tenant:                 The tenant object to help with some URL's.
 
-    :returns: A program that is parsed.
+    :returns:                           A program that is parsed.
     :rtype: EpgProgram
     """
     if not program:
@@ -227,12 +227,12 @@ def parse_program_capi(program, tenant):
 def http_get(url, params=None, token_bearer=None, token_cookie=None):
     """ Make a HTTP GET request for the specified URL.
 
-    :param str url:                 The URL to call.
-    :param dict params:             The query parameters to include to the URL.
-    :param str token_bearer:        The token to use in Bearer authentication.
-    :param str token_cookie:        The token to use in Cookie authentication.
+    :param str url:                     The URL to call.
+    :param dict params:                 The query parameters to include to the URL.
+    :param str token_bearer:            The token to use in Bearer authentication.
+    :param str token_cookie:            The token to use in Cookie authentication.
 
-    :returns:                       The HTTP Response object.
+    :returns:                           The HTTP Response object.
     :rtype: requests.Response
     """
     try:
@@ -246,14 +246,14 @@ def http_get(url, params=None, token_bearer=None, token_cookie=None):
 def http_post(url, params=None, form=None, data=None, token_bearer=None, token_cookie=None):
     """ Make a HTTP POST request for the specified URL.
 
-    :param str url:                 The URL to call.
-    :param dict params:             The query parameters to include to the URL.
-    :param dict form:               A dictionary with form parameters to POST.
-    :param dict data:               A dictionary with json parameters to POST.
-    :param str token_bearer:        The token to use in Bearer authentication.
-    :param str token_cookie:        The token to use in Cookie authentication.
+    :param str url:                     The URL to call.
+    :param dict params:                 The query parameters to include to the URL.
+    :param dict form:                   A dictionary with form parameters to POST.
+    :param dict data:                   A dictionary with json parameters to POST.
+    :param str token_bearer:            The token to use in Bearer authentication.
+    :param str token_cookie:            The token to use in Cookie authentication.
 
-    :returns:                       The HTTP Response object.
+    :returns:                           The HTTP Response object.
     :rtype: requests.Response
     """
     try:
@@ -268,15 +268,15 @@ def http_post(url, params=None, form=None, data=None, token_bearer=None, token_c
 def _request(method, url, params=None, form=None, data=None, token_bearer=None, token_cookie=None):
     """ Makes a request for the specified URL.
 
-    :param str method:              The HTTP Method to use.
-    :param str url:                 The URL to call.
-    :param dict params:             The query parameters to include to the URL.
-    :param dict form:               A dictionary with form parameters to POST.
-    :param dict data:               A dictionary with json parameters to POST.
-    :param str token_bearer:        The token to use in Bearer authentication.
-    :param str token_cookie:        The token to use in Cookie authentication.
+    :param str method:                  The HTTP Method to use.
+    :param str url:                     The URL to call.
+    :param dict params:                 The query parameters to include to the URL.
+    :param dict form:                   A dictionary with form parameters to POST.
+    :param dict data:                   A dictionary with json parameters to POST.
+    :param str token_bearer:            The token to use in Bearer authentication.
+    :param str token_cookie:            The token to use in Cookie authentication.
 
-    :returns:                       The HTTP Response object.
+    :returns:                           The HTTP Response object.
     :rtype: requests.Response
     """
     _LOGGER.debug('Sending %s %s... (%s)', method, url, form or data)

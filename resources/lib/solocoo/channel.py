@@ -33,7 +33,10 @@ class ChannelApi:
     def get_channels(self, filter_unavailable=True, filter_pin=False):
         """ Get all channels.
 
-        :returns: A list of all channels.
+        :param bool filter_unavailable: Hide unavailable channels.
+        :param bool filter_pin:         Hide PIN-protected channels.
+
+        :returns:                       A list of all channels.
         :rtype: list[resources.lib.solocoo.util.Channel]
         """
         entitlements = self._auth.list_entitlements()
@@ -83,9 +86,9 @@ class ChannelApi:
     def get_asset(self, asset_id):
         """ Get channel information for the requested asset.
 
-        :param str asset_id:          The ID of the asset
+        :param str asset_id:            The ID of the asset
 
-        :returns: The requested asset.
+        :returns:                       The requested asset.
         :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
         """
         reply = util.http_get(SOLOCOO_API + '/assets/{asset_id}'.format(asset_id=asset_id),
@@ -101,7 +104,13 @@ class ChannelApi:
         raise Exception('Unknown asset type: %s' % data.get('type'))
 
     def get_asset_by_locid(self, loc_id):
-        """ Convert a locId to a assetId. """
+        """ Convert a locId to a assetId.
+
+        :param str loc_id:              The locID of the asset.
+
+        :returns:                       The matching Asset.
+        :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
+        """
         reply = util.http_get(
             'https://{domain}/{env}/capi.aspx'.format(domain=self._tenant.get('domain'), env=self._tenant.get('env')),
             params={
@@ -116,9 +125,9 @@ class ChannelApi:
     def get_replay(self, channel_id):
         """ Get a list of programs that are replayable from the given channel.
 
-        :param str channel_id:          The ID of the asset
+        :param str channel_id:          The ID of the asset.
 
-        :returns: A list of Programs.
+        :returns:                       A list of Programs.
         :rtype: list[resources.lib.solocoo.util.Program]
         """
         entitlements = self._auth.list_entitlements()
@@ -146,7 +155,7 @@ class ChannelApi:
 
         :param str series_id:          The ID of the series.
 
-        :returns: A list of Programs.
+        :returns:                       A list of Programs.
         :rtype: list[resources.lib.solocoo.util.Program]
         """
         entitlements = self._auth.list_entitlements()
@@ -172,9 +181,9 @@ class ChannelApi:
     def get_stream(self, asset_id):
         """ Get stream information for the requested asset.
 
-        :param str asset_id:          The ID of the asset
+        :param str asset_id:            The ID of the asset
 
-        :returns: Information on how to play this asset.
+        :returns:                       Information on how to play this asset.
         :rtype: StreamInfo
         """
         _LOGGER.debug('Requesting stream info for channel %s', asset_id)
@@ -216,7 +225,13 @@ class ChannelApi:
         return stream
 
     def verify_pin(self, pin):
-        """ Verify the PIN. """
+        """ Verify the PIN.
+
+        :param str pin:                 The PIN to validate.
+
+        :returns:                       Returns true if the PIN is valid.
+        :rtype: boolean
+        """
         try:
             util.http_post(
                 SOLOCOO_API + '/pin/parental/verify',

@@ -18,7 +18,3 @@ class InvalidTokenException(Exception):
 
 class InvalidLoginException(Exception):
     """ Is thrown when the credentials are invalid. """
-
-
-# class LoginErrorException(Exception):
-#     """ Is thrown when we could not login """

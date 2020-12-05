@@ -26,8 +26,9 @@ class SearchApi:
     def search(self, query):
         """ Search through the catalog.
 
-        :returns: A list of results.
+        :param str query:               The query to search for.
 
+        :returns:                        A list of results.
         :rtype: list[resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program]
         """
         _LOGGER.debug('Requesting entitlements')

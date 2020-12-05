@@ -55,8 +55,9 @@ class Menu:
     def generate_titleitem_series(cls, item):
         """ Generate a TitleItem.
 
-        :param resources.lib.solocoo.util.Program item:         The Program to convert to a TitleItem.
+        :param resources.lib.solocoo.util.Program item: The Program to convert to a TitleItem.
 
+        :returns:                       A generated TitleItem for a Series.
         :rtype: TitleItem
         """
         return TitleItem(
@@ -80,9 +81,10 @@ class Menu:
     def generate_titleitem_program(cls, item, timeline=False):
         """ Generate a TitleItem.
 
-        :param resources.lib.solocoo.util.Program item:         The Program to convert to a TitleItem.
-        :param boolean timeline:     Indicates that this TitleItem will be used in a timeline.
+        :param resources.lib.solocoo.util.Program item: The Program to convert to a TitleItem.
+        :param boolean timeline:                        Indicates that this TitleItem will be used in a timeline.
 
+        :returns:                       A generated TitleItem for a Program.
         :rtype: TitleItem
         """
         title = item.title
@@ -140,8 +142,9 @@ class Menu:
     def generate_titleitem_channel(cls, item):
         """ Generate a TitleItem for a Channel.
 
-        :param resources.lib.solocoo.util.Channel item:         The Channel to convert to a TitleItem.
+        :param resources.lib.solocoo.util.Channel item: The Channel to convert to a TitleItem.
 
+        :returns:                       A generated TitleItem for a Channel.
         :rtype: TitleItem
         """
         if item.epg_now:
@@ -177,10 +180,10 @@ class Menu:
     def _format_program_plot(cls, program):
         """ Format a plot for a program.
 
-        :param resources.lib.solocoo.util.Program program:     The program we want to have a plot for.
+        :param resources.lib.solocoo.util.Program program: The program we want to have a plot for.
 
-        :return A formatted plot for this program.
-        :rtype str
+        :returns:                       A formatted plot for this program.
+        :rtype: str
         """
         plot = ''
 
@@ -210,10 +213,10 @@ class Menu:
     def _format_channel_plot(cls, channel):
         """ Format a plot for a channel.
 
-        :param resources.lib.solocoo.util.Channel channel:     The channel we want to have a plot for.
+        :param resources.lib.solocoo.util.Channel channel: The channel we want to have a plot for.
 
-        :return A formatted plot for this channel.
-        :rtype str
+        :returns:                       A formatted plot for this channel.
+        :rtype: str
         """
         plot = ''
 
