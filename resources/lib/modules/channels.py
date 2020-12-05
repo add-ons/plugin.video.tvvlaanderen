@@ -213,8 +213,8 @@ class Channels:
         dates = []
         today = datetime.today()
 
-        # The API provides 7 days in the past and 0 days in the future
-        for i in range(0, -7, -1):
+        # The API provides content for 8 days in the past and 0 days in the future
+        for i in range(0, -8, -1):
             day = today + timedelta(days=i)
 
             if i == -1:
