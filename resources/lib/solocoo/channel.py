@@ -197,6 +197,8 @@ class ChannelApi:
         except HTTPError as ex:
             if ex.response.status_code == 402:
                 raise NotAvailableInOfferException
+            if ex.response.status_code == 403:
+                raise UnavailableException
             if ex.response.status_code == 404:
                 raise UnavailableException
             raise
