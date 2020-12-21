@@ -68,11 +68,11 @@ build: clean
 
 release:
 ifneq ($(release),)
-	@github_changelog_generator -u add-ons -p plugin.video.tvvlaanderen --no-issues --future-release v$(release);
+	@github_changelog_generator -u add-ons -p plugin.video.tvvlaanderen --no-issues --exclude-labels duplicate,question,invalid,wontfix,release --future-release v$(release);
 
 	@echo "cd /addon/@version\nset $$release\nsave\nbye" | xmllint --shell addon.xml; \
-#	date=$(shell date '+%Y-%m-%d'); \
-#	echo "cd /addon/extension[@point='xbmc.addon.metadata']/news\nset v$$release ($$date)\nsave\nbye" | xmllint --shell addon.xml; \
+	date=$(shell date '+%Y-%m-%d'); \
+	echo "cd /addon/extension[@point='xbmc.addon.metadata']/news\nset v$$release ($$date)\nsave\nbye" | xmllint --shell addon.xml; \
 
 	# Next steps to release:
 	# - Modify the news-section of addons.xml
