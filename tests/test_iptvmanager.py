@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Tests for Auth API """
+""" Tests for IPTV Manager """
 
 # pylint: disable=missing-docstring,no-self-use
 
@@ -10,9 +10,12 @@ import logging
 import socket
 import unittest
 
+from resources.lib import kodiutils
+
 _LOGGER = logging.getLogger(__name__)
 
 
+@unittest.skipUnless(kodiutils.get_setting('username') and kodiutils.get_setting('password'), 'Skipping since we have no credentials.')
 class TestIptvManager(unittest.TestCase):
 
     def test_channels(self):

@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
 """ Tests """
 
+# pylint: disable=missing-docstring,no-self-use,wrong-import-order,wrong-import-position
+
 from __future__ import absolute_import, division, unicode_literals
 
-import logging
+import json
 import os
 import sys
 
 import xbmcaddon
+
+from resources.lib import kodilogging
+from resources.lib.solocoo.auth import AuthApi
 
 try:  # Python 3
     from http.client import HTTPConnection
 except ImportError:  # Python 2
     from httplib import HTTPConnection
 
-logging.basicConfig(level=logging.DEBUG)
+kodilogging.config()
 
 # Add logging to urllib
 HTTPConnection.debuglevel = 1
@@ -24,10 +29,16 @@ if sys.version_info[0] == 2:
     reload(sys)  # pylint: disable=undefined-variable  # noqa: F821
     sys.setdefaultencoding("utf-8")  # pylint: disable=no-member
 
-
 # Set credentials based on environment data
 # Use the .env file with Pipenv to make this work nicely during development
-if os.environ.get('ADDON_USERNAME') and os.environ.get('ADDON_PASSWORD'):
-    ADDON = xbmcaddon.Addon()
+ADDON = xbmcaddon.Addon()
+if os.environ.get('ADDON_USERNAME'):
     ADDON.setSetting('username', os.environ.get('ADDON_USERNAME'))
+if os.environ.get('ADDON_PASSWORD'):
     ADDON.setSetting('password', os.environ.get('ADDON_PASSWORD'))
+if os.environ.get('ADDON_TOKENS'):
+    TOKEN_PATH = 'tests/home/userdata/addon_data/plugin.video.tvvlaanderen/tokens/'
+    if not os.path.exists(TOKEN_PATH):
+        os.makedirs(TOKEN_PATH)
+    with open(os.path.join(TOKEN_PATH, AuthApi.TOKEN_FILE), 'w') as fdesc:
+        fdesc.write(os.environ.get('ADDON_TOKENS'))

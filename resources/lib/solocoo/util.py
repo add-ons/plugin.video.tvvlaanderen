@@ -12,7 +12,7 @@ import requests
 from requests import HTTPError
 
 from resources.lib import kodiutils
-from resources.lib.solocoo import Channel, Program, Credit
+from resources.lib.solocoo import Channel, Credit, Program
 from resources.lib.solocoo.exceptions import InvalidTokenException
 
 _LOGGER = logging.getLogger(__name__)

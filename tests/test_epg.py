@@ -16,6 +16,7 @@ from resources.lib.solocoo.epg import EpgApi
 _LOGGER = logging.getLogger(__name__)
 
 
+@unittest.skipUnless(kodiutils.get_setting('username') and kodiutils.get_setting('password'), 'Skipping since we have no credentials.')
 class TestEpg(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestEpg, self).__init__(*args, **kwargs)
