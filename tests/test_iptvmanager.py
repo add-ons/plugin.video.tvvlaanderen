@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import json
 import logging
 import socket
+import threading
 import unittest
 
 from resources.lib import kodiutils
@@ -22,9 +23,13 @@ class TestIptvManager(unittest.TestCase):
         # Prepare data (implementation from IPTV Manager)
         sock = self._prepare_for_data()
 
-        # Make request trough routing
-        from resources.lib.addon import routing
-        routing.run(['plugin://plugin.video.tvvlaanderen/iptv/channels', 0, 'port=' + str(sock.getsockname()[1])])
+        def make_request():
+            """ Make request trough routing """
+            from resources.lib.addon import routing
+            routing.run(['plugin://plugin.video.tvvlaanderen/iptv/channels', 0, 'port=' + str(sock.getsockname()[1])])
+
+        background = threading.Thread(target=make_request)
+        background.start()
 
         # Wait for data (implementation from IPTV Manager)
         data = self._wait_for_data(sock)
@@ -40,9 +45,13 @@ class TestIptvManager(unittest.TestCase):
         # Prepare data (implementation from IPTV Manager)
         sock = self._prepare_for_data()
 
-        # Make request trough routing
-        from resources.lib.addon import routing
-        routing.run(['plugin://plugin.video.tvvlaanderen/iptv/epg', 0, 'port=' + str(sock.getsockname()[1])])
+        def make_request():
+            """ Make request trough routing """
+            from resources.lib.addon import routing
+            routing.run(['plugin://plugin.video.tvvlaanderen/iptv/epg', 0, 'port=' + str(sock.getsockname()[1])])
+
+        background = threading.Thread(target=make_request)
+        background.start()
 
         # Wait for data (implementation from IPTV Manager)
         data = self._wait_for_data(sock)
