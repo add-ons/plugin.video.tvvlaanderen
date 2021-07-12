@@ -14,6 +14,8 @@ disable=
     too-many-instance-attributes,
     too-many-locals,
     too-many-public-methods,
+    use-maxsplit-arg,
+    consider-using-from-import,
 
     super-with-arguments, # Python 2.7 compatibility
     raise-missing-from, # Python 2.7 compatibility
