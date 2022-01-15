@@ -6,9 +6,9 @@
 
 # TV Vlaanderen (and other M7 Group based) Kodi Add-on
 
-This project contains the codebase for multiple Solocoo API based add-ons. While this Add-on can be used for all
-supported providers, it's recommended to use the build Add-on from the list below. This allows to install multiple
-add-ons at the same time.
+This project contains the codebase for multiple M7 Group add-ons. While this repository can be used for all supported
+providers, it's recommended to use the build Add-on from the list below. This allows you to install multiple add-ons at
+the same time.
 
 ## Supported providers
 
@@ -19,24 +19,20 @@ add-ons at the same time.
 
 ### Unsupported providers
 
-These providers should be possible to support, since they use the same API, but we are unable to test this. Let us know
-of any other VOD providers from M7 Group that are missing from this list, or if you are interested in helping out to
-support the unsupported providers.
+These providers are known to use the same API, but we are unable to test this. Let us know if you are interested in
+helping out to add support for these providers or if any other VOD providers from the M7 Group are missing from this
+list.
 
 | Provider                                           | Country                      |
 |----------------------------------------------------|------------------------------|
 | [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              |
+| [DirectOne](https://livetv.directone.hu/)          | Hungary                      |
 | [Focus Sat](https://livetv.focussat.ro/)           | Romania                      |
-| [M7 Deutschland](https://www.m7deutschland.de/)    | Germany                      |
 | [NextGenTel](https://nextgentel.tv/)               | Norway                       |
-| [Online.nl](https://livetv.online.nl/)             | The Netherlands              |
 | [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                      |
 | [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                     |
-| [Teleplaza](https://livetv.teleplaza.nl/)          | The Netherlands              |
 | [TéléSat](https://livetv.telesat.be/)              | Belgium (Wallonia & Brussels |
 | [TriNed](https://livetv.trined.nl)                 | The Netherlands              |
-| [UPC Direct](https://livetv.upcdirect.hu/)         | Hungary                      |
-| [VAIBR](https://livetv.vaibr.nl/)                  | The Netherlands              |
 
 # Related projects
 

@@ -17,13 +17,55 @@ TENANTS = dict([
         env='m7be2iphone',
         app='as',
     )),
+    # The following providers are untested
     ('cds', dict(
         name='Canal Digitaal',
         domain='livetv.canaldigitaal.nl',
         env='m7be2iphone',
         app='cds',
     )),
-    # and many more, ...
+    ('fsro', dict(
+        name='Focus Sat',
+        domain='livetv.focussat.ru',
+        env='m7be2iphone',
+        app='fsro',
+    )),
+    ('ngt', dict(
+        name='NextGenTel',
+        domain='nextgentel.tv',
+        env='m7be2iphone',
+        app='ngt',
+    )),
+    ('slcz', dict(
+        name='Skylink CZ',
+        domain='livetv.skylink.cz',
+        env='m7be2iphone',
+        app='slcz',
+    )),
+    ('slsk', dict(
+        name='Skylink SK',
+        domain='livetv.skylink.sk',
+        env='m7be2iphone',
+        app='slsk',
+    )),
+    ('tsn', dict(
+        name='TéléSat',
+        domain='livetv.telesat.be',
+        env='m7be2iphone',
+        app='tsn',
+    )),
+    ('tnd', dict(
+        name='TriNed',
+        domain='livetv.trined.nl',
+        env='m7be2iphone',
+        app='tnd',
+    )),
+    ('upchu', dict(
+        name='Direct One',
+        domain='livetv.directone.hu',
+        env='m7be2iphone',
+        app='upchu',
+    )),
 ])
 
 
