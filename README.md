@@ -4,34 +4,39 @@
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Contributors](https://img.shields.io/github/contributors/add-ons/plugin.video.tvvlaanderen.svg)](https://github.com/add-ons/plugin.video.tvvlaanderen/graphs/contributors)
 
-# TV Vlaanderen Kodi Add-on
+# TV Vlaanderen (and other M7 Group based) Kodi Add-on
 
-*plugin.video.tvvlaanderen* is een Kodi add-on om Live TV, Restart en Replay te bekijken met je TV Vlaanderen abonnement. 
+This project contains the codebase for multiple Solocoo API based add-ons. While this Add-on can be used for all
+supported providers, it's recommended to use the build Add-on from the list below. This allows to install multiple
+add-ons at the same time.
 
-> Note: Je hebt hiervoor een betaald abonnement nodig bij [TV Vlaanderen](https://www.tv-vlaanderen.be/).
+## Supported providers
 
-Meer informatie kan je vinden op de [Wiki pagina](https://github.com/add-ons/plugin.video.tvvlaanderen/wiki).
+|                                                                         | Country                      | Website                                            |
+|-------------------------------------------------------------------------|------------------------------|----------------------------------------------------|
+| [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) | Belgium (Flanders)           | [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  |
+| [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       | Austria                      | [HD Austria](https://livetv.hdaustria.at/)         |
+| *Currently not supported:*                                              |                              |                                                    |
+|                                                                         | The Netherlands              | [Canal Digitaal](https://livetv.canaldigitaal.nl/) |
+|                                                                         | Romania                      | [Focus Sat](https://livetv.focussat.ro/)           |
+|                                                                         | Germany                      | [M7 Deutschland](https://www.m7deutschland.de/)    |
+|                                                                         | Norway                       | [NextGenTel](https://nextgentel.tv/)               |
+|                                                                         | The Netherlands              | [Online.nl](https://livetv.online.nl/)             |
+|                                                                         | Czechia                      | [Skylink.cz](https://livetv.skylink.cz/)           |
+|                                                                         | Slovakia                     | [Skylink.sk](https://livetv.skylink.sk/)           |
+|                                                                         | The Netherlands              | [Teleplaza](https://livetv.teleplaza.nl/)          |
+|                                                                         | Belgium (Wallonia & Brussels | [TéléSat](https://livetv.telesat.be/)              |
+|                                                                         | The Netherlands              | [TriNed](https://livetv.trined.nl)                 |
+|                                                                         | Hungary                      | [UPC Direct](https://livetv.upcdirect.hu/)         |
+|                                                                         | The Netherlands              | [VAIBR](https://livetv.vaibr.nl/)                  |
 
-## Features
+> **Note:** Let us know of any other VOD providers using Solocoo that are missing from this list, or if you are 
+> interested in helping out to support the unsupported providers.
 
-De volgende features worden ondersteund:
-* Live TV
-* Restart TV, bekijk het huidige programma vanaf het begin (niet voor alle zenders)
-* Replay TV, bekijk een programma tot 7 dagen terug (niet voor alle zenders)
-* Doorzoeken van alle programma's
-* Integratie met [IPTV Manager](https://github.com/add-ons/service.iptv.manager)
+# Related projects
 
-## Screenshots
-
-<table>
-  <tr>
-    <td><img src="resources/screenshot01.jpg" width=270></td>
-    <td><img src="resources/screenshot02.jpg" width=270></td>
-    <td><img src="resources/screenshot03.jpg" width=270></td>
-  </tr>
- </table>
+- [plugin.video.sl](https://github.com/Sorien/plugin.video.sl)
 
 ## Disclaimer
 
-Deze add-on wordt niet ondersteund door TV Vlaanderen, en wordt aangeboden 'as is', zonder enige garantie.
-TV Vlaanderen is een merk van Canal+ Luxembourg S. à r.l.
+This add-on is not supported by M7 Group, and is provided 'as is', without any guarantee.
