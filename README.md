@@ -12,26 +12,31 @@ add-ons at the same time.
 
 ## Supported providers
 
-|                                                                         | Country                      | Website                                            |
-|-------------------------------------------------------------------------|------------------------------|----------------------------------------------------|
-| [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) | Belgium (Flanders)           | [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  |
-| [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       | Austria                      | [HD Austria](https://livetv.hdaustria.at/)         |
-| *Currently not supported:*                                              |                              |                                                    |
-|                                                                         | The Netherlands              | [Canal Digitaal](https://livetv.canaldigitaal.nl/) |
-|                                                                         | Romania                      | [Focus Sat](https://livetv.focussat.ro/)           |
-|                                                                         | Germany                      | [M7 Deutschland](https://www.m7deutschland.de/)    |
-|                                                                         | Norway                       | [NextGenTel](https://nextgentel.tv/)               |
-|                                                                         | The Netherlands              | [Online.nl](https://livetv.online.nl/)             |
-|                                                                         | Czechia                      | [Skylink.cz](https://livetv.skylink.cz/)           |
-|                                                                         | Slovakia                     | [Skylink.sk](https://livetv.skylink.sk/)           |
-|                                                                         | The Netherlands              | [Teleplaza](https://livetv.teleplaza.nl/)          |
-|                                                                         | Belgium (Wallonia & Brussels | [TéléSat](https://livetv.telesat.be/)              |
-|                                                                         | The Netherlands              | [TriNed](https://livetv.trined.nl)                 |
-|                                                                         | Hungary                      | [UPC Direct](https://livetv.upcdirect.hu/)         |
-|                                                                         | The Netherlands              | [VAIBR](https://livetv.vaibr.nl/)                  |
+| Provider                                           | Country                      | Add-on                                                                  |
+|----------------------------------------------------|------------------------------|-------------------------------------------------------------------------|
+| [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  | Belgium (Flanders)           | [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) |
+| [HD Austria](https://livetv.hdaustria.at/)         | Austria                      | [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       |
 
-> **Note:** Let us know of any other VOD providers using Solocoo that are missing from this list, or if you are 
-> interested in helping out to support the unsupported providers.
+### Unsupported providers
+
+These providers should be possible to support, since they use the same API, but we are unable to test this. Let us know
+of any other VOD providers from M7 Group that are missing from this list, or if you are interested in helping out to
+support the unsupported providers.
+
+| Provider                                           | Country                      |
+|----------------------------------------------------|------------------------------|
+| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              |
+| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      |
+| [M7 Deutschland](https://www.m7deutschland.de/)    | Germany                      |
+| [NextGenTel](https://nextgentel.tv/)               | Norway                       |
+| [Online.nl](https://livetv.online.nl/)             | The Netherlands              |
+| [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                      |
+| [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                     |
+| [Teleplaza](https://livetv.teleplaza.nl/)          | The Netherlands              |
+| [TéléSat](https://livetv.telesat.be/)              | Belgium (Wallonia & Brussels |
+| [TriNed](https://livetv.trined.nl)                 | The Netherlands              |
+| [UPC Direct](https://livetv.upcdirect.hu/)         | Hungary                      |
+| [VAIBR](https://livetv.vaibr.nl/)                  | The Netherlands              |
 
 # Related projects
 
