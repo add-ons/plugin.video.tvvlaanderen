@@ -11,6 +11,12 @@ TENANTS = dict([
         env='m7be2iphone',
         app='tvv',
     )),
+    ('as', dict(
+        name='HD Austria',
+        domain='livetv.hdaustria.at',
+        env='m7be2iphone',
+        app='as',
+    )),
     ('cds', dict(
         name='Canal Digitaal',
         domain='livetv.canaldigitaal.nl',

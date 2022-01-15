@@ -56,6 +56,7 @@ clean:
 	@find . -name '__pycache__' -type d -delete
 	@rm -rf .pytest_cache/ tests/cdm tests/userdata/temp
 	@rm -f *.log .coverage
+	@rm -rf dist/
 
 build: clean
 	@printf ">>> Building package\n"
@@ -86,4 +87,23 @@ multizip: clean
 		if [ $$matrix ]; then version=$(version)+matrix.1; else version=$(version); fi; \
 		printf "cd /addon/@version\nset $$version\nsave\nbye\n" | xmllint --shell addon.xml; \
 		make build; \
+	)
+
+brands: clean
+	@-$(foreach brand,$(shell find brands -mindepth 1 -maxdepth 1 -type d -printf '%f\n'), \
+	    mkdir -p "dist/$(brand)"; \
+	    cp -Ra addon_entry.py CHANGELOG.md LICENSE resources/ dist/$(brand)/; \
+	    cp -Ra brands/$(brand)/* dist/$(brand)/; \
+	    make -f ../../Makefile -C dist/$(brand) build-brand; \
+	)
+
+build-brand:
+	@-$(foreach abi,$(KODI_PYTHON_ABIS), \
+        printf ">>> Building package ../$(zip_name)\n" \
+		printf "cd /addon/requires/import[@addon='xbmc.python']/@version\nset $(abi)\nsave\nbye\n" | xmllint --shell addon.xml; \
+		matrix=$(findstring $(abi), $(word 1,$(KODI_PYTHON_ABIS))); \
+		if [ $$matrix ]; then version=$(version)+matrix.1; else version=$(version); fi; \
+		printf "cd /addon/@version\nset $$version\nsave\nbye\n" | xmllint --shell addon.xml; \
+		cd ..; zip -r $(zip_name) $(zip_dir); cd -;\
+	    printf ">>> Successfully wrote package as: ../$(zip_name)\n" \
 	)
