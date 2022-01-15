@@ -275,7 +275,8 @@ class AuthApi:
             )
         )
 
-        if 'De gebruikersnaam of het wachtwoord dat u heeft ingegeven is niet correct' in reply.text:
+        # We should get redirected, if not, there was an issue with the credentials.
+        if not reply.history:
             raise InvalidLoginException
 
         # Extract query parameters from redirected url
