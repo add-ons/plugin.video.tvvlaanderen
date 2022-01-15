@@ -4,34 +4,40 @@
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Contributors](https://img.shields.io/github/contributors/add-ons/plugin.video.tvvlaanderen.svg)](https://github.com/add-ons/plugin.video.tvvlaanderen/graphs/contributors)
 
-# TV Vlaanderen Kodi Add-on
+# TV Vlaanderen (and other M7 Group based) Kodi Add-on
 
-*plugin.video.tvvlaanderen* is een Kodi add-on om Live TV, Restart en Replay te bekijken met je TV Vlaanderen abonnement. 
+This project contains the codebase for multiple M7 Group add-ons. While this repository can be used for all supported
+providers, it's recommended to use the build Add-on from the list below. This allows you to install multiple add-ons at
+the same time.
 
-> Note: Je hebt hiervoor een betaald abonnement nodig bij [TV Vlaanderen](https://www.tv-vlaanderen.be/).
+## Supported providers
 
-Meer informatie kan je vinden op de [Wiki pagina](https://github.com/add-ons/plugin.video.tvvlaanderen/wiki).
+| Provider                                           | Country                      | Add-on                                                                  |
+|----------------------------------------------------|------------------------------|-------------------------------------------------------------------------|
+| [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  | Belgium (Flanders)           | [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) |
+| [HD Austria](https://livetv.hdaustria.at/)         | Austria                      | [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       |
 
-## Features
+### Unsupported providers
 
-De volgende features worden ondersteund:
-* Live TV
-* Restart TV, bekijk het huidige programma vanaf het begin (niet voor alle zenders)
-* Replay TV, bekijk een programma tot 7 dagen terug (niet voor alle zenders)
-* Doorzoeken van alle programma's
-* Integratie met [IPTV Manager](https://github.com/add-ons/service.iptv.manager)
+These providers are known to use the same API, but we are unable to test this. Let us know if you are interested in
+helping out to add support for these providers or if any other VOD providers from the M7 Group are missing from this
+list.
 
-## Screenshots
+| Provider                                           | Country                      |
+|----------------------------------------------------|------------------------------|
+| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              |
+| [DirectOne](https://livetv.directone.hu/)          | Hungary                      |
+| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      |
+| [NextGenTel](https://nextgentel.tv/)               | Norway                       |
+| [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                      |
+| [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                     |
+| [TéléSat](https://livetv.telesat.be/)              | Belgium (Wallonia & Brussels |
+| [TriNed](https://livetv.trined.nl)                 | The Netherlands              |
 
-<table>
-  <tr>
-    <td><img src="resources/screenshot01.jpg" width=270></td>
-    <td><img src="resources/screenshot02.jpg" width=270></td>
-    <td><img src="resources/screenshot03.jpg" width=270></td>
-  </tr>
- </table>
+# Related projects
+
+- [plugin.video.sl](https://github.com/Sorien/plugin.video.sl)
 
 ## Disclaimer
 
-Deze add-on wordt niet ondersteund door TV Vlaanderen, en wordt aangeboden 'as is', zonder enige garantie.
-TV Vlaanderen is een merk van Canal+ Luxembourg S. à r.l.
+This add-on is not supported by M7 Group, and is provided 'as is', without any guarantee.
