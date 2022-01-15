@@ -99,11 +99,11 @@ brands: clean
 
 build-brand:
 	@-$(foreach abi,$(KODI_PYTHON_ABIS), \
-        printf ">>> Building package ../$(zip_name)\n" \
+        printf ">>> Building package for $(abi)\n"; \
 		printf "cd /addon/requires/import[@addon='xbmc.python']/@version\nset $(abi)\nsave\nbye\n" | xmllint --shell addon.xml; \
 		matrix=$(findstring $(abi), $(word 1,$(KODI_PYTHON_ABIS))); \
 		if [ $$matrix ]; then version=$(version)+matrix.1; else version=$(version); fi; \
 		printf "cd /addon/@version\nset $$version\nsave\nbye\n" | xmllint --shell addon.xml; \
-		cd ..; zip -r $(zip_name) $(zip_dir); cd -;\
-	    printf ">>> Successfully wrote package as: ../$(zip_name)\n" \
+		cd ..; zip -r $(name)-$$version.zip $(zip_dir); cd -;\
+	    printf ">>> Successfully wrote package as: ../$(name)-$$version.zip\n" \
 	)
