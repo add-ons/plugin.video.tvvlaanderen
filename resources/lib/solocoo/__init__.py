@@ -17,18 +17,18 @@ TENANTS = dict([
         env='m7be2iphone',
         app='as',
     )),
+    ('fsro', dict(
+        name='Focus Sat',
+        domain='livetv.focussat.ro',
+        env='m7cz2iphone',
+        app='fsro',
+    )),
     # The following providers are untested
     ('cds', dict(
         name='Canal Digitaal',
         domain='livetv.canaldigitaal.nl',
         env='m7be2iphone',
         app='cds',
-    )),
-    ('fsro', dict(
-        name='Focus Sat',
-        domain='livetv.focussat.ro',
-        env='m7cz2iphone',
-        app='fsro',
     )),
     ('ngt', dict(
         name='NextGenTel',
