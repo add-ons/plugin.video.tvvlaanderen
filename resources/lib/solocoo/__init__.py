@@ -26,8 +26,8 @@ TENANTS = dict([
     )),
     ('fsro', dict(
         name='Focus Sat',
-        domain='livetv.focussat.ru',
-        env='m7be2iphone',
+        domain='livetv.focussat.ro',
+        env='m7cz2iphone',
         app='fsro',
     )),
     ('ngt', dict(

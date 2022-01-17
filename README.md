@@ -16,6 +16,7 @@ the same time.
 |----------------------------------------------------|------------------------------|-------------------------------------------------------------------------|
 | [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  | Belgium (Flanders)           | [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) |
 | [HD Austria](https://livetv.hdaustria.at/)         | Austria                      | [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       |
+| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      | [plugin.video.focussat](brands/plugin.video.focussat/README.md)         |
 
 ### Unsupported providers
 
@@ -27,7 +28,6 @@ list.
 |----------------------------------------------------|------------------------------|
 | [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              |
 | [DirectOne](https://livetv.directone.hu/)          | Hungary                      |
-| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      |
 | [NextGenTel](https://nextgentel.tv/)               | Norway                       |
 | [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                      |
 | [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                     |
