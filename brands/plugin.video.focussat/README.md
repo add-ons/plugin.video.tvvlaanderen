@@ -2,7 +2,7 @@
 
 *plugin.video.focussat* is a Kodi add-on to watch Live TV, Restart TV and Replay TV with your Focus Sat subscription.
 
-> Note: You need a paid subscription at [Focus Sat](https://www.focussat.ro//).
+> Note: You need a paid subscription at [Focus Sat](https://www.focussat.ro/).
 
 ## Disclaimer
 
