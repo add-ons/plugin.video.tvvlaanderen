@@ -24,7 +24,7 @@
         <license>GPL-3.0-only</license>
         <news>v1.0.4 (2021-06-27)s
 - Fix playback of some channels.</news>
-        <source>https://github.com/add-ons/plugin.video.solocoo</source>
+        <source>https://github.com/add-ons/plugin.video.tvvlaanderen</source>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
