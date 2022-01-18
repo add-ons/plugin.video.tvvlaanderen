@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, unicode_literals
 import json
 import logging
 import os
+import re
 import time
 import uuid
 from hashlib import md5
@@ -260,11 +261,13 @@ class AuthApi:
             params=dict(
                 a=self._tenant.get('app'),
                 s=time.time() * 100,  # unixtime in milliseconds
+                d='PC',
             )
         )
 
         # Extract the path from the form, the form posts to /
-        login_url = urljoin(login_page.url, '/')
+        form_action = re.compile(r'<form action="([^"]+)"').search(login_page.text).group(1)
+        login_url = urljoin(login_page.url, form_action)
 
         # Submit credentials
         reply = util.http_post(

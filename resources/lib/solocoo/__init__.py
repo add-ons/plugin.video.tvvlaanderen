@@ -20,7 +20,7 @@ TENANTS = dict([
     ('fsro', dict(
         name='Focus Sat',
         domain='livetv.focussat.ro',
-        env='m7cz2iphone',
+        env='m7cziphone',
         app='fsro',
     )),
     # The following providers are untested
