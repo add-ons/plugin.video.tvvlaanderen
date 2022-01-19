@@ -94,7 +94,7 @@ def check_deals_entitlement(deals, offers):
             best_deal = end
 
     if best_deal is not None:
-        return dateutil.parser.parse(best_deal).astimezone(dateutil.tz.gettz('CET'))
+        return dateutil.parser.parse(best_deal).astimezone()
 
     return False
 
@@ -138,8 +138,8 @@ def parse_program(program, offers=None):
         return None
 
     # Parse dates
-    start = dateutil.parser.parse(program.get('params', {}).get('start')).astimezone(dateutil.tz.gettz('CET'))
-    end = dateutil.parser.parse(program.get('params', {}).get('end')).astimezone(dateutil.tz.gettz('CET'))
+    start = dateutil.parser.parse(program.get('params', {}).get('start')).astimezone()
+    end = dateutil.parser.parse(program.get('params', {}).get('end')).astimezone()
 
     season = program.get('params', {}).get('seriesSeason')
     episode = program.get('params', {}).get('seriesEpisode')
@@ -183,9 +183,9 @@ def parse_program_capi(program, tenant):
         return None
 
     # Parse dates
-    start = datetime.fromtimestamp(program.get('start') / 1000, dateutil.tz.gettz('CET'))
-    end = datetime.fromtimestamp(program.get('end') / 1000, dateutil.tz.gettz('CET'))
-    now = datetime.now().replace(tzinfo=dateutil.tz.gettz('CET'))
+    start = datetime.fromtimestamp(program.get('start') / 1000).astimezone()
+    end = datetime.fromtimestamp(program.get('end') / 1000).astimezone()
+    now = datetime.now().astimezone()
 
     # Parse credits
     credit_list = []

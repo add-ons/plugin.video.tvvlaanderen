@@ -168,6 +168,6 @@ class EpgApi:
             date_obj = dateutil.parser.parse(date)
 
         # Mark as midnight
-        date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=dateutil.tz.gettz('CET'))
+        date_obj = date_obj.replace(hour=0, minute=0, second=0, microsecond=0)
         date_obj = date_obj.astimezone(dateutil.tz.gettz('UTC'))
         return date_obj
