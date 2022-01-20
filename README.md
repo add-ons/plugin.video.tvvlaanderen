@@ -4,10 +4,10 @@
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Contributors](https://img.shields.io/github/contributors/add-ons/plugin.video.tvvlaanderen.svg)](https://github.com/add-ons/plugin.video.tvvlaanderen/graphs/contributors)
 
-# TV Vlaanderen (and other M7 Group based) Kodi Add-on
+# M7 Group Kodi Add-ons
 
 This project contains the codebase for multiple M7 Group add-ons. While this repository can be used for all supported
-providers, it's recommended to use the build Add-on from the list below. This allows you to install multiple add-ons at
+providers, it's recommended to use the Add-ons from the list below. This allows you to install multiple add-ons at
 the same time.
 
 ## Supported providers
@@ -24,15 +24,15 @@ These providers are known to use the same API, but we are unable to test this. L
 helping out to add support for these providers or if any other VOD providers from the M7 Group are missing from this
 list.
 
-| Provider                                           | Country                      |
-|----------------------------------------------------|------------------------------|
-| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              |
-| [DirectOne](https://livetv.directone.hu/)          | Hungary                      |
-| [NextGenTel](https://nextgentel.tv/)               | Norway                       |
-| [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                      |
-| [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                     |
-| [TéléSat](https://livetv.telesat.be/)              | Belgium (Wallonia & Brussels |
-| [TriNed](https://livetv.trined.nl)                 | The Netherlands              |
+| Provider                                           | Country                       |
+|----------------------------------------------------|-------------------------------|
+| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands               |
+| [DirectOne](https://livetv.directone.hu/)          | Hungary                       |
+| [NextGenTel](https://nextgentel.tv/)               | Norway                        |
+| [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                       |
+| [Skylink.sk](https://livetv.skylink.sk/)           | Slovakia                      |
+| [TéléSat](https://livetv.telesat.be/)              | Belgium (Wallonia & Brussels) |
+| [TriNed](https://livetv.trined.nl)                 | The Netherlands               |
 
 # Related projects
 
