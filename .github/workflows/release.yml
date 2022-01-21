@@ -1,0 +1,34 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    name: Release plugin.video.tvvlaanderen
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out ${{ github.sha }} from repository ${{ github.repository }}
+        uses: actions/checkout@v2
+
+      - name: Get changelog
+        id: get-changelog
+        run: |
+          description=$(sed '1,6d;/^## /,$d' CHANGELOG.md)
+          echo $description
+          description="${description//'%'/'%25'}"
+          description="${description//$'\n'/'%0A'}"
+          description="${description//$'\r'/'%0D'}"
+          echo ::set-output name=body::$description
+
+      - name: Generate distribution zips
+        run: scripts/build.py brands
+
+      - name: Create Release on Github
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.get-changelog.outputs.body }}
+          draft: false
+          prerelease: false
+          files: "dist/*.zip"
+          token: ${{ secrets.GH_TOKEN }}
