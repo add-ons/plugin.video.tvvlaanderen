@@ -1,8 +1,8 @@
-# HD Austria Kodi Add-on
+# Focus Sat Kodi Add-on
 
-*plugin.video.hdaustria* is a Kodi add-on to watch Live TV, Restart TV and Replay TV with your HD Austria subscription.
+*plugin.video.focussat* is a Kodi add-on to watch Live TV, Restart TV and Replay TV with your Focus Sat subscription.
 
-> Note: You need a paid subscription at [HD Austria](https://www.hdaustria.at/).
+> Note: You need a paid subscription at [Focus Sat](https://www.focussat.ro/).
 
 ## Installation
 

@@ -7,3 +7,5 @@ tests/ export-ignore
 codecov.yml export-ignore
 Makefile export-ignore
 requirements.txt export-ignore
+brands/ export-ignore
+scripts/ export-ignore
