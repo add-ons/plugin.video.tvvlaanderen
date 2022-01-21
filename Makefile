@@ -2,9 +2,6 @@ export KODI_HOME := $(CURDIR)/tests/home
 export KODI_INTERACTIVE := 0
 PYTHON := python
 
-# Collect information to build as sensible package name
-name = $(shell xmllint --xpath 'string(/addon/@id)' addon.xml)
-
 languages = $(filter-out en_gb, $(patsubst resources/language/resource.language.%, %, $(wildcard resources/language/*)))
 
 all: check test build
@@ -24,7 +21,7 @@ check-translations:
 	)
 	@tests/check_for_unused_translations.py
 
-check-addon: clean build
+check-addon: build
 	@printf ">>> Running addon checks\n"
 	$(eval TMPDIR := $(shell mktemp -d))
 	@unzip dist/plugin.video.m7group-*+matrix.1.zip -d ${TMPDIR}
@@ -56,7 +53,7 @@ brands: clean
 
 release:
 ifneq ($(release),)
-	@github_changelog_generator -u add-ons -p $(name) --no-issues --exclude-labels duplicate,question,invalid,wontfix,release --future-release v$(release);
+	docker run -it --rm --env CHANGELOG_GITHUB_TOKEN=$(GH_TOKEN) -v "$(shell pwd)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator -u add-ons -p plugin.video.tvvlaanderen --no-issues --exclude-labels duplicate,question,invalid,wontfix,release,testing --future-release v$(release)
 
 	@printf "cd /addon/@version\nset $$release\nsave\nbye\n" | xmllint --shell addon.xml; \
 	date=$(shell date '+%Y-%m-%d'); \
@@ -70,4 +67,4 @@ else
 	@printf "Usage: make release release=1.0.0\n"
 endif
 
-.PHONY: brands
+.PHONY: check codefix test clean build brands release
