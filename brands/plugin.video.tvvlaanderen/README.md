@@ -1,14 +1,20 @@
 # TV Vlaanderen Kodi Add-on
 
-*plugin.video.tvvlaanderen* is een Kodi add-on om Live TV, Restart en Replay te bekijken met je TV Vlaanderen abonnement. 
+*plugin.video.tvvlaanderen* is een Kodi add-on om Live TV, Restart en Replay te bekijken met je TV Vlaanderen
+abonnement.
 
 > Note: Je hebt hiervoor een betaald abonnement nodig bij [TV Vlaanderen](https://www.tv-vlaanderen.be/).
 
-Meer informatie kan je vinden op de [Wiki pagina](https://github.com/add-ons/plugin.video.tvvlaanderen/wiki).
+## Installatie
+
+Je kan deze addon installeren via de Add-on functie van Kodi door te zoeken op "TV Vlaanderen". De laatste versie kan
+ook gedownload worden bij de [releases](https://github.com/add-ons/plugin.video.tvvlaanderen/releases) van deze
+repository.
 
 ## Features
 
 De volgende features worden ondersteund:
+
 * Live TV
 * Restart TV, bekijk het huidige programma vanaf het begin (niet voor alle zenders)
 * Replay TV, bekijk een programma tot 7 dagen terug (niet voor alle zenders)
@@ -27,5 +33,5 @@ De volgende features worden ondersteund:
 
 ## Disclaimer
 
-Deze add-on wordt niet ondersteund door TV Vlaanderen, en wordt aangeboden 'as is', zonder enige garantie.
-TV Vlaanderen is een merk van Canal+ Luxembourg S. à r.l.
+Deze add-on wordt niet ondersteund door TV Vlaanderen, en wordt aangeboden 'as is', zonder enige garantie. TV Vlaanderen
+is een merk van Canal+ Luxembourg S. à r.l.
