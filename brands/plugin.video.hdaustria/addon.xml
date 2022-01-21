@@ -14,6 +14,9 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
+        <summary lang="de_DE">Schaue Live TV und on-demand TV mit deinem HD Austria Abonnement.</summary>
+        <description lang="de_DE">Dieses add-on erlaubt Zugriff auf Live TV Kanäle und video-on-demand Inhalte, bereitgestellt von deinem HD Austria Abonnement.</description>
+        <disclaimer lang="de_DE">Dieses add-on wird nicht von der M7 Group herausgegeben oder supportet, sondern wird angeboten 'as is' ohne jede Garantie.</disclaimer>
         <summary lang="en_GB">Watch Live TV and on-demand TV with your HD Austria subscription.</summary>
         <description lang="en_GB">This add-on gives access to the live tv channels and the video-on-demand content available in your HD Austria subscription.</description>
         <disclaimer lang="en_GB">This add-on is not officially commissioned/supported by M7 Group and is provided 'as is' without any warranty of any kind.</disclaimer>
@@ -24,6 +27,9 @@
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
+            <screenshot>resources/screenshot01.jpg</screenshot>
+            <screenshot>resources/screenshot02.jpg</screenshot>
+            <screenshot>resources/screenshot03.jpg</screenshot>
         </assets>
         <reuselanguageinvoker>true</reuselanguageinvoker>
     </extension>
