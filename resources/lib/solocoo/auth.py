@@ -13,7 +13,8 @@ from hashlib import md5
 
 from requests import HTTPError
 
-from resources.lib.solocoo import SOLOCOO_API, TENANTS, util
+from resources.lib.solocoo import SOLOCOO_API, util
+from resources.lib.solocoo.config import TENANTS
 from resources.lib.solocoo.exceptions import InvalidLoginException, InvalidTokenException
 
 try:  # Python 3
