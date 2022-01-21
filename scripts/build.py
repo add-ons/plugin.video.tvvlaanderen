@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """ Build ZIP files for all brands. """
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import shutil
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     with open('addon.xml', 'r') as f:
         tree = ET.fromstring(f.read())
         addon_info = {
-            'name': tree.get('id'),
+            'id': tree.get('id'),
             'version': tree.get('version'),
             'news': tree.find("./extension[@point='xbmc.addon.metadata']/news").text
         }
@@ -68,7 +69,7 @@ if __name__ == '__main__':
 
     if sys.argv[-1] == 'base':
         # Build base addon
-        brand = addon_info['name']
+        brand = addon_info['id']
         dest = os.path.join(DIST_DIR, brand)
         if not os.path.isdir(dest):
             os.mkdir(dest)
