@@ -188,27 +188,28 @@ def create_pull_request(repo, branch, addon_info, gh_username, gh_token):
 
 
 if __name__ == '__main__':
-    filename = sys.argv[-1]
+    filenames = sys.argv[1:]
 
-    # Fork the repo if the user does not have a personal repo fork
-    if not user_fork_exists(GH_REPO, GH_USERNAME, GH_TOKEN):
-        create_personal_fork(GH_REPO, GH_USERNAME, GH_TOKEN)
+    for filename in filenames:
+        # Fork the repo if the user does not have a personal repo fork
+        if not user_fork_exists(GH_REPO, GH_USERNAME, GH_TOKEN):
+            create_personal_fork(GH_REPO, GH_USERNAME, GH_TOKEN)
 
-    with TemporaryDirectory() as extract_dir:
-        with ZipFile(filename) as z:
-            # Look for addon.xml in zip and load the details
-            xmlfile = next(f.filename for f in z.filelist if f.filename.endswith('addon.xml'))
-            addon_info = get_addon_info(z.read(xmlfile).decode('utf-8'))
-            if addon_info['python'] != '3.0.0':
-                branch = 'leia'
-            else:
-                branch = 'matrix'
+        with TemporaryDirectory() as extract_dir:
+            with ZipFile(filename) as z:
+                # Look for addon.xml in zip and load the details
+                xmlfile = next(f.filename for f in z.filelist if f.filename.endswith('addon.xml'))
+                addon_info = get_addon_info(z.read(xmlfile).decode('utf-8'))
+                if addon_info['python'] != '3.0.0':
+                    branch = 'leia'
+                else:
+                    branch = 'matrix'
 
-            # Extract the ZIP file to the extract_dir
-            z.extractall(extract_dir)
+                # Extract the ZIP file to the extract_dir
+                z.extractall(extract_dir)
 
-        # Checkout the fork locally and create a branch with our new code from the extract_dir
-        create_addon_branch(GH_REPO, branch, os.path.join(extract_dir, addon_info['id']), addon_info, GH_USERNAME, GH_TOKEN, GH_EMAIL)
+            # Checkout the fork locally and create a branch with our new code from the extract_dir
+            create_addon_branch(GH_REPO, branch, os.path.join(extract_dir, addon_info['id']), addon_info, GH_USERNAME, GH_TOKEN, GH_EMAIL)
 
-    # Create pull request
-    create_pull_request(GH_REPO, branch, addon_info, GH_USERNAME, GH_TOKEN)
+        # Create pull request
+        # create_pull_request(GH_REPO, branch, addon_info, GH_USERNAME, GH_TOKEN)

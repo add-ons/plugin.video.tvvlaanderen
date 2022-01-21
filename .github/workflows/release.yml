@@ -28,7 +28,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: ${{ steps.get-changelog.outputs.body }}
-          draft: true
+          draft: false
           prerelease: false
           files: "dist/*.zip"
           token: ${{ secrets.GH_TOKEN }}
