@@ -12,11 +12,12 @@ the same time.
 
 ## Supported providers
 
-| Provider                                           | Country                      | Add-on                                                                  |
-|----------------------------------------------------|------------------------------|-------------------------------------------------------------------------|
-| [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  | Belgium (Flanders)           | [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md) |
-| [HD Austria](https://livetv.hdaustria.at/)         | Austria                      | [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)       |
-| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      | [plugin.video.focussat](brands/plugin.video.focussat/README.md)         |
+| Provider                                           | Country                      | Add-on                                                                          |
+|----------------------------------------------------|------------------------------|---------------------------------------------------------------------------------|
+| [TV Vlaanderen](https://livetv.tv-vlaanderen.be/)  | Belgium (Flanders)           | [plugin.video.tvvlaanderen](brands/plugin.video.tvvlaanderen/README.md)         |
+| [HD Austria](https://livetv.hdaustria.at/)         | Austria                      | [plugin.video.hdaustria](brands/plugin.video.hdaustria/README.md)               |
+| [Focus Sat](https://livetv.focussat.ro/)           | Romania                      | [plugin.video.focussat](brands/plugin.video.focussat/README.md)                 |
+| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands              | [plugin.video.canaldigitaal.nl](brands/plugin.video.canaldigitaal.nl/README.md) |
 
 ### Unsupported providers
 
@@ -26,7 +27,6 @@ list.
 
 | Provider                                           | Country                       |
 |----------------------------------------------------|-------------------------------|
-| [Canal Digitaal](https://livetv.canaldigitaal.nl/) | The Netherlands               |
 | [DirectOne](https://livetv.directone.hu/)          | Hungary                       |
 | [NextGenTel](https://nextgentel.tv/)               | Norway                        |
 | [Skylink.cz](https://livetv.skylink.cz/)           | Czechia                       |
