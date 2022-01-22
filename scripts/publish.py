@@ -178,7 +178,7 @@ def create_pull_request(repo, branch, addon_info, gh_username, gh_token):
         resp = requests.post(
             'https://api.github.com/repos/xbmc/{}/pulls'.format(repo),
             json={
-                'title': '[{}] {}'.format(local_branch_name, addon_info.version),
+                'title': '[{}] {}'.format(local_branch_name, addon_info['version']),
                 'head': '{}:{}'.format(gh_username, local_branch_name),
                 'base': branch,
                 'body': pr_body,
