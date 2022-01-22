@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.5](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.5) (2022-01-21)
+## [v1.0.5](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.5) (2022-01-22)
 
 [Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v1.0.4...v1.0.5)
 
@@ -16,15 +16,20 @@
 
 **Merged pull requests:**
 
+- HD Austria: language, readme, addon.xml, screenshots [\#48](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/48) ([bananenfisch](https://github.com/bananenfisch))
 - Adding romanian translation [\#43](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/43) ([derzis](https://github.com/derzis))
 
 ## [v1.0.4](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.4) (2021-06-27)
 
-[Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v1.0.3...v1.0.4)
+[Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v1.0...v1.0.4)
 
 **Fixed bugs:**
 
 - Set a user-agent [\#34](https://github.com/add-ons/plugin.video.tvvlaanderen/pull/34) ([michaelarnauts](https://github.com/michaelarnauts))
+
+## [v1.0](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0) (2021-06-27)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.tvvlaanderen/compare/v1.0.3...v1.0)
 
 ## [v1.0.3](https://github.com/add-ons/plugin.video.tvvlaanderen/tree/v1.0.3) (2021-02-04)
 
