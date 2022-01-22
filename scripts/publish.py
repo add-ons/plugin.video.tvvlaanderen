@@ -79,41 +79,51 @@ def create_personal_fork(repo, gh_username, gh_token):
     raise Exception('GitHub API error: {}\n{}'.format(resp.status_code, resp.text))
 
 
-def shell(*args, **kwargs):
+def shell(*args):
     """ Execute a shell command. """
-    check = bool(kwargs.get('check'))
-    subprocess.run(args, check=check)
+    subprocess.run(args, check=True)
 
 
 def create_addon_branch(repo, branch, source, addon_info, gh_username, gh_token, gh_email):
     """ Create and addon branch in your fork of the respective addon repo. """
-    with TemporaryDirectory() as work_dir:
-        os.chdir(work_dir)
+    cur_dir = os.getcwd()
+    os.chdir('dist')
 
-        local_branch_name = '{}@{}'.format(addon_info['id'], branch)
+    local_branch_name = '{}@{}'.format(addon_info['id'], branch)
 
+    if os.path.isdir(repo):
+        # We already have a checked out repo locally, update this with upstream code
+        os.chdir(repo)
+        shell('git', 'reset', '--hard')  # Remove all local changes
+        shell('git', 'remote', 'set-branches', '--add', 'upstream', branch)  # Make sure the upstream branch exists
+        shell('git', 'fetch', '-f', 'upstream', branch)  # Fetch upstream
+    else:
         # Clone the upstream repo
         shell('git', 'clone', '--branch', branch, '--origin', 'upstream', '--single-branch', 'git://github.com/xbmc/{}.git'.format(repo))
         os.chdir(repo)
 
-        # Create local branch
-        shell('git', 'checkout', '-B', local_branch_name, 'upstream/{}'.format(branch))
+    # Create local branch
+    shell('git', 'checkout', '-B', local_branch_name, 'upstream/{}'.format(branch))
 
-        # Remove current code
-        shutil.rmtree(os.path.join(work_dir, repo, addon_info['id']), ignore_errors=True)
+    # Remove current code
+    if os.path.isdir(addon_info['id']):
+        shutil.rmtree(addon_info['id'], ignore_errors=False)
 
-        # Add new code
-        shutil.copytree(source, os.path.join(work_dir, repo, addon_info['id']))
-        shell('git', 'add', '--', addon_info['id'])
-        shell('git', 'status')
+    # Add new code
+    shutil.copytree(source, addon_info['id'])
+    shell('git', 'add', '--', addon_info['id'])
+    shell('git', 'status')
 
-        # Create a commit with the new code
-        shell('git', 'config', 'user.name', gh_username)
-        shell('git', 'config', 'user.email', gh_email)
-        shell('git', 'commit', '-m', '[{}] {}'.format(addon_info['id'], addon_info['version']))
+    # Create a commit with the new code
+    shell('git', 'config', 'user.name', gh_username)
+    shell('git', 'config', 'user.email', gh_email)
+    shell('git', 'commit', '-m', '[{}] {}'.format(addon_info['id'], addon_info['version']))
 
-        # Push branch to fork
-        shell('git', 'push', '-f', 'https://{}:{}@github.com/{}/{}.git'.format(gh_username, gh_token, gh_username, repo), local_branch_name)
+    # Push branch to fork
+    shell('git', 'push', '-f', 'https://{}:{}@github.com/{}/{}.git'.format(gh_username, gh_token, gh_username, repo), local_branch_name)
+
+    # Restore working directory
+    os.chdir(cur_dir)
 
 
 def create_pull_request(repo, branch, addon_info, gh_username, gh_token):
@@ -212,4 +222,4 @@ if __name__ == '__main__':
             create_addon_branch(GH_REPO, branch, os.path.join(extract_dir, addon_info['id']), addon_info, GH_USERNAME, GH_TOKEN, GH_EMAIL)
 
         # Create pull request
-        # create_pull_request(GH_REPO, branch, addon_info, GH_USERNAME, GH_TOKEN)
+        create_pull_request(GH_REPO, branch, addon_info, GH_USERNAME, GH_TOKEN)

@@ -50,6 +50,7 @@ build: clean
 brands: clean
 	@printf ">>> Building all branded add-ons\n"
 	@scripts/build.py brands
+	@ls -lah dist/*.zip
 
 release:
 ifneq ($(release),)
