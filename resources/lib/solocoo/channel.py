@@ -9,8 +9,9 @@ import logging
 from requests import HTTPError
 
 from resources.lib.solocoo import SOLOCOO_API, StreamInfo, util
+from resources.lib.solocoo.collections import ASSET_TYPE_VOD_MOVIE, ASSET_TYPE_VOD_SERIES
 from resources.lib.solocoo.exceptions import NotAvailableInOfferException, UnavailableException
-from resources.lib.solocoo.util import parse_channel, parse_program
+from resources.lib.solocoo.util import parse_channel, parse_program, parse_vod_episode, parse_vod_movie, parse_vod_series
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class ChannelApi:
         :param bool filter_pin:         Hide PIN-protected channels.
 
         :returns:                       A list of all channels.
-        :rtype: list[resources.lib.solocoo.util.Channel]
+        :rtype: list[resources.lib.solocoo.Channel]
         """
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])
@@ -89,7 +90,7 @@ class ChannelApi:
         :param str asset_id:            The ID of the asset
 
         :returns:                       The requested asset.
-        :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
+        :rtype: resources.lib.solocoo.Channel|resources.lib.solocoo.Program|resources.lib.solocoo.VodMovie|resources.lib.solocoo.VodSeries|resources.lib.solocoo.VodEpisode
         """
         reply = util.http_get(SOLOCOO_API + '/assets/{asset_id}'.format(asset_id=asset_id),
                               token_bearer=self._tokens.jwt_token)
@@ -101,6 +102,14 @@ class ChannelApi:
         if data.get('type') == ASSET_TYPE_CHANNEL:
             return parse_channel(data)
 
+        if data.get('type') == ASSET_TYPE_VOD_MOVIE:
+            if data.get('params', {}).get('seriesId'):
+                return parse_vod_episode(data)
+            return parse_vod_movie(data)
+
+        if data.get('type') == ASSET_TYPE_VOD_SERIES:
+            return parse_vod_series(data)
+
         raise Exception('Unknown asset type: %s' % data.get('type'))
 
     def get_asset_by_locid(self, loc_id):
@@ -109,7 +118,7 @@ class ChannelApi:
         :param str loc_id:              The locID of the asset.
 
         :returns:                       The matching Asset.
-        :rtype: resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program
+        :rtype: resources.lib.solocoo.Channel|resources.lib.solocoo.Program
         """
         reply = util.http_get(
             'https://{domain}/{env}/capi.aspx'.format(domain=self._tenant.get('domain'), env=self._tenant.get('env')),
@@ -128,7 +137,7 @@ class ChannelApi:
         :param str channel_id:          The ID of the asset.
 
         :returns:                       A list of Programs.
-        :rtype: list[resources.lib.solocoo.util.Program]
+        :rtype: list[resources.lib.solocoo.Program]
         """
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])
@@ -156,7 +165,7 @@ class ChannelApi:
         :param str series_id:          The ID of the series.
 
         :returns:                       A list of Programs.
-        :rtype: list[resources.lib.solocoo.util.Program]
+        :rtype: list[resources.lib.solocoo.Program]
         """
         entitlements = self._auth.list_entitlements()
         offers = entitlements.get('offers', [])

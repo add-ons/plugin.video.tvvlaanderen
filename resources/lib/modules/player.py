@@ -7,7 +7,7 @@ import logging
 
 from resources.lib import kodiutils
 from resources.lib.modules.menu import Menu
-from resources.lib.solocoo import Channel, Program
+from resources.lib.solocoo import Channel, Program, VodEpisode, VodMovie
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.channel import ChannelApi
 from resources.lib.solocoo.exceptions import InvalidTokenException, NotAvailableInOfferException, UnavailableException
@@ -43,6 +43,10 @@ class Player:
             item = Menu.generate_titleitem_program(asset)
         elif isinstance(asset, Channel):
             item = Menu.generate_titleitem_channel(asset)
+        elif isinstance(asset, VodMovie):
+            item = Menu.generate_titleitem_vod_movie(asset)
+        elif isinstance(asset, VodEpisode):
+            item = Menu.generate_titleitem_vod_episode(asset)
         else:
             raise Exception('Unknown asset type: %s' % asset)
 
@@ -53,7 +57,13 @@ class Player:
             # Retry with fresh tokens
             self._auth.login(True)
             stream_info = self._channel_api.get_stream(asset.uid)
-        except (NotAvailableInOfferException, UnavailableException) as exc:
+        except NotAvailableInOfferException as exc:
+            _LOGGER.error(exc)
+            kodiutils.ok_dialog(message=kodiutils.localize(30713))  # The video is not available in you subscription.
+            kodiutils.end_of_directory()
+            return
+
+        except UnavailableException as exc:
             _LOGGER.error(exc)
             kodiutils.ok_dialog(message=kodiutils.localize(30712))  # The video is unavailable and can't be played right now.
             kodiutils.end_of_directory()

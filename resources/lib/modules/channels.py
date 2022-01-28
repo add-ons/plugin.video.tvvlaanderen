@@ -28,7 +28,6 @@ class Channels:
                        password=kodiutils.get_setting('password'),
                        tenant=kodiutils.get_setting('tenant'),
                        token_path=kodiutils.get_tokens_path())
-        self._entitlements = auth.list_entitlements()
         self._channel_api = ChannelApi(auth)
         self._epg_api = EpgApi(auth)
 

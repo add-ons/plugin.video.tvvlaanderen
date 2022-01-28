@@ -29,7 +29,7 @@ class SearchApi:
         :param str query:               The query to search for.
 
         :returns:                        A list of results.
-        :rtype: list[resources.lib.solocoo.util.Channel|resources.lib.solocoo.util.Program]
+        :rtype: list[resources.lib.solocoo.Channel|resources.lib.solocoo.Program]
         """
         if not query:
             return []

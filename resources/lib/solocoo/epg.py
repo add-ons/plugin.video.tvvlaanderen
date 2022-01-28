@@ -42,7 +42,7 @@ class EpgApi:
         :param str|datetime date_to:    The date of the guide we want to fetch.
 
         :returns:                       A parsed dict with EPG data.
-        :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
+        :rtype: dict[str, list[resources.lib.solocoo.Program]]
         """
         # Allow to specify one channel, and we map it to a list
         if not isinstance(channels, list):
@@ -91,7 +91,7 @@ class EpgApi:
         :param str|datetime date_to:    The date of the guide we want to fetch.
 
         :returns:                       A parsed dict with EPG data.
-        :rtype: dict[str, list[resources.lib.solocoo.util.Program]]
+        :rtype: dict[str, list[resources.lib.solocoo.Program]]
         """
         # Allow to specify one channel, and we map it to a list
         if not isinstance(channels, list):

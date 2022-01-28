@@ -12,7 +12,7 @@ import requests
 from requests import HTTPError
 
 from resources.lib import kodiutils
-from resources.lib.solocoo import Channel, Credit, Program
+from resources.lib.solocoo import Channel, Credit, Program, VodEpisode, VodGenre, VodMovie, VodSeries
 from resources.lib.solocoo.exceptions import InvalidTokenException
 
 _LOGGER = logging.getLogger(__name__)
@@ -171,7 +171,7 @@ def parse_program(program, offers=None):
 
 
 def parse_program_capi(program, tenant):
-    """ Parse an program dict from the CAPI.
+    """ Parse a program dict from the CAPI.
 
     :param dict program:                The program object to parse.
     :param dict tenant:                 The tenant object to help with some URL's.
@@ -225,6 +225,76 @@ def parse_program_capi(program, tenant):
         episode=program.get('episodeNo'),
         credit=credit_list,
         available=(program.get('flags') & 16) and (start < now),  # BIT_EPG_FLAG_REPLAY
+    )
+
+
+def parse_vod_genre(collection):
+    """ Parse a genre from the Collections API.
+
+    :param dict collection:             The collection object to parse.
+    :returns:                           A genre that is parsed.
+    :rtype: VodGenre
+    """
+    return VodGenre(
+        uid=None,
+        title=collection.get('title').capitalize() if collection.get('title') else VodGenre.map_label(collection.get('label')),
+        query=collection.get('query'),
+    )
+
+
+def parse_vod_movie(asset):
+    """ Parse a movie from the Collections API.
+
+    :param dict asset:                  The asset object to parse.
+    :returns:                           A movie that is parsed.
+    :rtype: VodMovie
+    """
+    return VodMovie(
+        uid=asset.get('id'),
+        title=asset.get('title'),
+        year=asset.get('params', {}).get('year'),
+        duration=asset.get('params', {}).get('duration'),
+        age=asset.get('params', {}).get('age'),
+        cover=find_image(asset.get('images'), 'po'),  # poster
+        preview=find_image(asset.get('images'), 'la'),  # landscape
+    )
+
+
+def parse_vod_series(asset):
+    """ Parse a series from the Collections API.
+
+    :param dict asset:                  The asset object to parse.
+    :returns:                           A series that is parsed.
+    :rtype: VodSeries
+    """
+    return VodSeries(
+        uid=asset.get('id'),
+        title=asset.get('title'),
+        year=asset.get('params', {}).get('year'),
+        age=asset.get('params', {}).get('age'),
+        cover=find_image(asset.get('images'), 'po'),  # poster
+        preview=find_image(asset.get('images'), 'la'),  # landscape
+    )
+
+
+def parse_vod_episode(asset):
+    """ Parse an episode from the Collections API.
+
+    :param dict asset:                  The asset object to parse.
+    :returns:                           An epsiode that is parsed.
+    :rtype: VodEpisode
+    """
+    return VodEpisode(
+        uid=asset.get('id'),
+        title=asset.get('title'),
+        year=asset.get('params', {}).get('year'),
+        duration=asset.get('params', {}).get('duration'),
+        age=asset.get('params', {}).get('age'),
+        cover=find_image(asset.get('images'), 'po'),  # poster
+        preview=find_image(asset.get('images'), 'la'),  # landscape
+        series_id=asset.get('params', {}).get('seriesId'),
+        season=asset.get('params', {}).get('seriesSeason'),
+        episode=asset.get('params', {}).get('seriesEpisode'),
     )
 
 
