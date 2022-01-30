@@ -9,7 +9,7 @@ import logging
 import unittest
 
 from resources.lib import kodiutils
-from resources.lib.solocoo import VodCatalog, VodGenre, VodMovie
+from resources.lib.solocoo import VodCatalog, VodGenre
 from resources.lib.solocoo.asset import AssetApi
 from resources.lib.solocoo.auth import AuthApi
 

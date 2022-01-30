@@ -10,6 +10,17 @@ This project contains the codebase for multiple M7 Group add-ons. While this rep
 providers, it's recommended to use the Add-ons from the list below. This allows you to install multiple add-ons at
 the same time.
 
+## Features
+
+The following features are supported:
+
+* Live TV
+* Restart TV, watch the current program from the beginning
+* Replay TV, watch a recently aired program up to 7 days
+* Catalog, play Movies or Series that are available in your subscription
+* Search through all programs
+* Integration with [IPTV Manager](https://github.com/add-ons/service.iptv.manager)
+
 ## Supported providers
 
 | Provider                                           | Country                      | Add-on                                                                  |
