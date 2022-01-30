@@ -9,8 +9,8 @@ from resources.lib import kodiutils
 from resources.lib.kodiutils import TitleItem
 from resources.lib.modules.menu import Menu
 from resources.lib.solocoo import VodEpisode, VodMovie, VodSeries
+from resources.lib.solocoo.asset import AssetApi
 from resources.lib.solocoo.auth import AuthApi
-from resources.lib.solocoo.collections import CollectionsApi
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Catalog:
                        password=kodiutils.get_setting('password'),
                        tenant=kodiutils.get_setting('tenant'),
                        token_path=kodiutils.get_tokens_path())
-        self._api = CollectionsApi(auth)
+        self._api = AssetApi(auth)
 
     def show_overview(self, catalogs=False):
         """ Shows an overview. """
@@ -32,7 +32,7 @@ class Catalog:
 
         if catalogs:
             # Show all catalogs
-            catalogs = self._api.get_catalogs()
+            catalogs = self._api.get_collection_catalogs()
             for catalog in catalogs:
                 title_item = TitleItem(
                     title=catalog.title,
@@ -59,7 +59,7 @@ class Catalog:
             listing.append(title_item)
 
             # Show genres
-            genres = self._api.get_genres()
+            genres = self._api.get_collection_genres()
             for genre in genres:
                 title_item = TitleItem(
                     title=genre.title,
@@ -74,7 +74,7 @@ class Catalog:
         """ Show an overview by catalog. """
         listing = []
 
-        genres = self._api.get_genres(catalog)
+        genres = self._api.get_collection_genres(catalog)
         for genre in genres:
             title_item = TitleItem(
                 title=genre.title,
@@ -106,7 +106,7 @@ class Catalog:
         """ Show an overview of the seasons of a series. """
         listing = []
 
-        seasons = self._api.get_seasons(asset)
+        seasons = self._api.get_collection_seasons(asset)
         for season in seasons:
             listing.append(Menu.generate_titleitem_vod_season(season))
 

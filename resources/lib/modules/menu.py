@@ -63,17 +63,17 @@ class Menu:
         kodiutils.show_listing(listing, sort=['unsorted'])
 
     @classmethod
-    def generate_titleitem_series(cls, item):
+    def generate_titleitem_epg_series(cls, item):
         """ Generate a TitleItem.
 
-        :param resources.lib.solocoo.Program item: The Program to convert to a TitleItem.
+        :param resources.lib.solocoo.EpgSeries item: The Program to convert to a TitleItem.
 
         :returns:                       A generated TitleItem for a Series.
         :rtype: TitleItem
         """
         return TitleItem(
             title=item.title,
-            path=kodiutils.url_for('show_channel_replay_series', series_id=item.series_id),
+            path=kodiutils.url_for('show_channel_replay_series', series_id=item.uid),
             art_dict={
                 'cover': item.cover,
                 'icon': item.preview,
@@ -89,10 +89,10 @@ class Menu:
         )
 
     @classmethod
-    def generate_titleitem_program(cls, item, timeline=False):
+    def generate_titleitem_epg(cls, item, timeline=False):
         """ Generate a TitleItem.
 
-        :param resources.lib.solocoo.Program item: The Program to convert to a TitleItem.
+        :param resources.lib.solocoo.Epg item: The Program to convert to a TitleItem.
         :param boolean timeline:                        Indicates that this TitleItem will be used in a timeline.
 
         :returns:                       A generated TitleItem for a Program.
@@ -191,7 +191,7 @@ class Menu:
     def _format_program_plot(cls, program):
         """ Format a plot for a program.
 
-        :param resources.lib.solocoo.Program program: The program we want to have a plot for.
+        :param resources.lib.solocoo.Epg program: The program we want to have a plot for.
 
         :returns:                       A formatted plot for this program.
         :rtype: str

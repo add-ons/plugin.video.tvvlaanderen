@@ -10,8 +10,8 @@ class Channel:
 
     def __init__(self, uid, station_id, title, icon, preview, number, epg_now=None, epg_next=None, replay=False, radio=False, available=None, pin=None):
         """
-        :param Program epg_now:     The currently playing program on this channel.
-        :param Program epg_next:    The next playing program on this channel.
+        :param Epg epg_now:     The currently playing program on this channel.
+        :param Epg epg_next:    The next playing program on this channel.
         """
         self.uid = uid
         self.station_id = station_id
@@ -49,7 +49,7 @@ class StreamInfo:
         return "%r" % self.__dict__
 
 
-class Program:
+class Epg:
     """ Program object """
 
     def __init__(self, uid, title, description, cover, preview, start, end, duration, channel_id, formats, genres, replay,
@@ -83,6 +83,26 @@ class Program:
         self.credit = credit or []
 
         self.available = available
+
+    def __repr__(self):
+        return "%r" % self.__dict__
+
+
+class EpgSeries:
+    """ EpgSeries object """
+
+    def __init__(self, uid, title, description, cover, preview, channel_id, formats, genres, age):
+        self.uid = uid
+        self.title = title
+        self.description = description
+        self.cover = cover
+        self.preview = preview
+
+        self.age = age
+        self.channel_id = channel_id
+
+        self.formats = formats
+        self.genres = genres
 
     def __repr__(self):
         return "%r" % self.__dict__
