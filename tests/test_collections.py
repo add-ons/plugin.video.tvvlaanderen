@@ -47,8 +47,7 @@ class TestCollections(unittest.TestCase):
 
     def test_get_assets(self):
         assets = self._api.query_assets('videos,categoryb64,U2NpZW5jZSBGaWN0aW9u,owners,cnlseriesbe,starznl,cnlvodnl,bbcsnl,histint,ngnl,lovnaten')  # Science Fiction
-        self.assertIsInstance(assets, list)
-        self.assertIsInstance(assets[0], VodMovie)
+        self.assertIsInstance(assets, list)  # can be a VodMovie or an VodSeries
         self.assertIsNotNone(assets[0].uid)
         self.assertIsNotNone(assets[0].title)
 
