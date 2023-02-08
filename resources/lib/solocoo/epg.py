@@ -60,7 +60,7 @@ class EpgApi:
         if date_to is not None:
             date_to = self._parse_date(date_to)
         else:
-            date_to = (date_from + timedelta(days=1))
+            date_to = date_from + timedelta(days=1)
 
         programs = {}
 
@@ -110,7 +110,7 @@ class EpgApi:
         if date_to is not None:
             date_to = self._parse_date(date_to)
         else:
-            date_to = (date_from + timedelta(days=1))
+            date_to = date_from + timedelta(days=1)
         date_to_posix = str(int((date_to - epoch).total_seconds())) + '000'
 
         programs = {}

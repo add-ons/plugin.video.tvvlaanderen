@@ -1,5 +1,5 @@
-[![GitHub release](https://img.shields.io/github/release/add-ons/plugin.video.tvvlaanderen.svg?include_prereleases)](https://github.com/add-ons/plugin.video.tvvlaanderen/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/add-ons/plugin.video.tvvlaanderen/CI/master)](https://github.com/add-ons/plugin.video.tvvlaanderen/actions?query=branch%3Amaster)
+[![GitHub release](https://img.shields.io/github/v/release/add-ons/plugin.video.tvvlaanderen?display_name=tag)](https://github.com/add-ons/plugin.video.tvvlaanderen/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/add-ons/plugin.video.tvvlaanderen/ci.yml?branch=master)](https://github.com/add-ons/plugin.video.tvvlaanderen/actions?query=branch%3Amaster)
 [![Codecov status](https://img.shields.io/codecov/c/github/add-ons/plugin.video.tvvlaanderen/master)](https://codecov.io/gh/add-ons/plugin.video.tvvlaanderen/branch/master)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Contributors](https://img.shields.io/github/contributors/add-ons/plugin.video.tvvlaanderen.svg)](https://github.com/add-ons/plugin.video.tvvlaanderen/graphs/contributors)
