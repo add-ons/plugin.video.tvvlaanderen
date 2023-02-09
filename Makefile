@@ -29,7 +29,7 @@ check-addon: build
 	@rm -rf ${TMPDIR}
 
 codefix:
-	@isort -l 160 resources/
+	@isort -l 160 .
 
 test:
 	@printf ">>> Running unit tests\n"
@@ -41,7 +41,7 @@ clean:
 	@find . -name '__pycache__' -type d -delete
 	@rm -rf .pytest_cache/ tests/cdm tests/userdata/temp
 	@rm -f *.log .coverage
-	@rm -rf dist/
+	@rm -rf dist/plugin.video.*
 
 build: clean
 	@printf ">>> Building generic base add-on\n"
