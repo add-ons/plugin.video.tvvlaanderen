@@ -9,7 +9,7 @@ import logging
 import unittest
 
 from resources.lib import kodiutils
-from resources.lib.solocoo import Program
+from resources.lib.solocoo import Epg
 from resources.lib.solocoo.auth import AuthApi
 from resources.lib.solocoo.epg import EpgApi
 
@@ -36,7 +36,7 @@ class TestEpg(unittest.TestCase):
 
         programs = guide.get(channel_id)
         self.assertIsInstance(programs, list)
-        self.assertIsInstance(programs[0], Program)
+        self.assertIsInstance(programs[0], Epg)
 
     def test_get_guide_capi(self):
         api = EpgApi(self._auth)
@@ -51,7 +51,7 @@ class TestEpg(unittest.TestCase):
 
         programs = guide.get(channel_id[0])
         self.assertIsInstance(programs, list)
-        self.assertIsInstance(programs[0], Program)
+        self.assertIsInstance(programs[0], Epg)
 
 
 if __name__ == '__main__':

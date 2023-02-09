@@ -14,7 +14,7 @@ from resources.lib import kodiutils
 from resources.lib.modules.player import Player
 from resources.lib.solocoo import Channel
 from resources.lib.solocoo.auth import AuthApi
-from resources.lib.solocoo.channel import ChannelApi
+from resources.lib.solocoo.asset import AssetApi
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class TestStream(unittest.TestCase):
         xbmc.Player().stop()
 
     def test_play_live(self):
-        api = ChannelApi(self._auth)
+        api = AssetApi(self._auth)
 
         channels = api.get_channels()
         self.assertIsInstance(channels[0], Channel)
