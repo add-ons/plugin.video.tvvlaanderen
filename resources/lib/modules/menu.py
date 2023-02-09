@@ -200,7 +200,7 @@ class Menu:
 
         # Add remaining
         if isinstance(program.available, datetime):
-            time_left = (program.available - datetime.now(dateutil.tz.UTC))
+            time_left = program.available - datetime.now(dateutil.tz.UTC)
             if time_left.days > 1:
                 plot += '» ' + kodiutils.localize(30208, days=time_left.days) + "\n"  # [B]{days} days[/B] remaining
             elif time_left.days == 1:
