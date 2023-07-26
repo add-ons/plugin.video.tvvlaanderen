@@ -107,7 +107,7 @@ if __name__ == '__main__':
             shutil.copytree(os.path.join(BRANDS_DIR, brand), dest, dirs_exist_ok=True)
 
             # Update addon.xml for matrix and create zip
-            modify_xml(os.path.join(dest, 'addon.xml'), addon_info['version'] + '+matrix.1', addon_info['news'])
+            modify_xml(os.path.join(dest, 'addon.xml'), addon_info['version'] + '+matrix.1', addon_info['news'], '3.0.0')
             shutil.make_archive(os.path.join(DIST_DIR, "%s-%s+matrix.1" % (brand, addon_info['version'])), 'zip', DIST_DIR, brand)
 
             # Modify addon.xml for leia and create zip
